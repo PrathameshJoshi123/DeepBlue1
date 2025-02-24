@@ -1,0 +1,51 @@
+.about-us-container {
+    flex-grow: 1;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem; /* Adds space between sections */
+}
+
+.about-us {
+    padding: 2rem;
+    background: var(--white);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.about-us h2 {
+    font-size: 2rem;
+    color: var(--donor-primary);
+    margin-bottom: 1rem;
+}
+
+.about-us p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+}
+
+.about-us ul {
+    list-style-type: disc;
+    margin-left: 2rem;
+}
+
+.about-us li {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.impact {
+    background-color: #f9f9f9;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.impact h2 {
+    font-size: 2rem;
+    color: var(--donor-primary);
+    margin-bottom: 1rem;
+}

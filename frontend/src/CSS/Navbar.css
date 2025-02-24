@@ -1,0 +1,73 @@
+.navbar-container {
+    background: linear-gradient(135deg, #2C3E50, #34495E);
+    color: var(--white);
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-container h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* Remove default link styling (blue color and underline) */
+.navbar-container a {
+    text-decoration: none; /* Remove underline */
+    color: var(--white); /* Set the color to white */
+}
+
+.navbar-container .header-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.navbar-container .header-buttons .button {
+    color: var(--white);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    text-transform: uppercase;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.3s ease;
+}
+
+.navbar-container .header-buttons .button:hover {
+    background: var(--white);
+    color: var(--donor-primary);
+}
+
+/* Additional styles for links inside header-buttons */
+.navbar-container .header-buttons a {
+    color: var(--white);  /* Set link color to white */
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.navbar-container .header-buttons a:hover {
+    background: var(--white);
+    color: var(--donor-primary); /* Change color on hover */
+}
+
+/* Specific button styles for Logout */
+.navbar-container .header-buttons button {
+    background: none;
+    border: 2px solid var(--white);
+    color: var(--white);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    text-transform: uppercase;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.navbar-container .header-buttons button:hover {
+    background: var(--white);
+    color: var(--donor-primary); /* Change color on hover */
+}

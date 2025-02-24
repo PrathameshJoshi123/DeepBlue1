@@ -1,0 +1,173 @@
+:root {
+    /* Donor Form Color Palette */
+    --donor-primary: #E76F51;
+    --donor-secondary: #9A3324;
+    --donor-accent: #F4A261;
+    --background-color: #F7EDE2;
+    --text-color: #2C3E50;
+    --card-background: #FFFFFF;
+}
+
+/* Specific Styles for Donor Component */
+.donor-container {
+    max-width: 1000px; /* Reduced width */
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+.donor-container h3 {
+    color: var(--donor-primary);
+    font-size: 1.2rem;
+    border-bottom: 2px solid var(--donor-primary);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+}
+
+.donor-container .donorform {
+    display: grid;
+    gap: 2rem;
+}
+
+.donor-container .donorform div {
+    display: grid;
+    grid-template-columns: 180px 1fr; /* Reduced label width */
+    align-items: center;
+}
+
+.donor-container label {
+    display: flex;
+    font-weight: 600;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--donor-primary);
+}
+
+.donor-container input,
+.donor-container textarea,
+.donor-container select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--donor-primary);
+    border-radius: 8px;
+    outline: none;
+}
+
+.donor-container input:hover,
+.donor-container textarea:hover,
+.donor-container select:hover {
+    box-shadow: 0 1px 8px var(--donor-primary);
+}
+
+.donor-container button {
+    background: var(--donor-primary);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    justify-self: center;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem; /* Added bottom margin */
+}
+
+.donor-container button:hover {
+    color: black;
+    background: white;
+    transform: translateY(-3px);
+}
+
+.donor-container .benefits-section {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(to bottom right, white, var(--background-color));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.donor-container .benefits-section h2 {
+    color: var(--donor-primary);
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.donor-container .benefits-section ul {
+    list-style: none;
+    display: grid;
+    gap: 1rem;
+}
+
+.donor-container .benefits-section li {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--text-color);
+}
+
+.donor-container .benefits-section li i {
+    color: var(--donor-primary);
+    font-size: 1.2rem;
+}
+
+.donor-container footer {
+    background: var(--donor-secondary);
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+    .donor-container .donorform {
+        flex-direction: column;
+    }
+}
+
+.donor-container .donorform h3 {
+    color: var(--donor-primary);
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Modal styles */
+.donor-container .modal {
+    display: none;
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.donor-container .modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 20px;
+    width: 40%;
+    border-radius: 10px;
+    text-align: left;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.donor-container .close {
+    color: #aaa;
+    float: right;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.donor-container .close:hover,
+.donor-container .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}

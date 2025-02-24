@@ -1,0 +1,6 @@
+.footer-container {
+    background: linear-gradient(135deg, #2C3E50, #34495E);
+    color: var(--white);
+    text-align: center;
+    padding: 1.5rem;
+}

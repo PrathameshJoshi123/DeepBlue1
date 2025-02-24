@@ -1,0 +1,231 @@
+:root {
+    --receiver-primary: #3a7ca5;
+    --receiver-secondary: #1e3f66;
+    --background-color: #f5f7fa;
+    --text-color: #2d3748;
+    --card-background: #ffffff;
+    --accent-color: #5c95c4;
+  }
+  
+  /* Specific styles for receiver section */
+  .receiver-container {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-color);
+    background: linear-gradient(135deg, var(--background-color) 0%, #e0e7f0 100%);
+    line-height: 1.6;
+  }
+  
+  .receiver-container header {
+    color: white;
+    text-align: center;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(
+      to right,
+      var(--receiver-primary),
+      var(--receiver-secondary)
+    );
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .receiver-container header h1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .receiver-container header .icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .receiver-container header .icon-large {
+    font-size: 3rem;
+    color: white;
+  }
+  
+  .receiver-container main {
+    display: flex;
+    max-width: 800px;
+    margin: 2rem auto;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 0 1rem;
+  }
+  
+  /* Form Section */
+  .receiver-container .form-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(to bottom right, white, var(--background-color));
+    width: 100%;
+    max-width: 800px;
+  }
+  
+  /* Receiver Form */
+  .receiver-container .receiverform {
+    display: grid;
+    gap: 1.5rem;
+  }
+  
+  .receiver-container .receiverform div {
+    display: grid;
+    align-items: center;
+    grid-template-columns: 200px 1fr;
+  }
+  
+  .receiver-container label {
+    display: flex;
+    font-weight: 600;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--receiver-primary);
+  }
+  
+  .receiver-container label i {
+    margin-right: 0.7rem;
+    color: var(--receiver-primary);
+    font-size: 1.2rem;
+  }
+  
+  .receiver-container input,
+  .receiver-container textarea,
+  .receiver-container select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--receiver-primary);
+    border-radius: 8px;
+    outline: none;
+  }
+  
+  .receiver-container input:hover,
+  .receiver-container textarea:hover,
+  .receiver-container select:hover {
+    box-shadow: 0 1px 8px;
+  }
+  
+  .receiver-container button {
+    background: var(--receiver-primary);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    justify-self: center;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .receiver-container button:hover {
+    color: black;
+    background: white;
+    transform: translateY(-3px);
+  }
+  
+  /* Program Benefits Section */
+  .receiver-container .benefits-section {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(to bottom right, white, var(--background-color));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 800px;
+    margin: 2rem auto;
+    gap: 2rem;
+    padding: 0 1rem;
+  }
+  
+  .receiver-container .benefits-section h2 {
+    color: var(--receiver-primary);
+    margin-bottom: 1rem;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+  }
+  
+  .receiver-container .benefits-section ul {
+    list-style: none;
+    display: grid;
+    gap: 1rem;
+  }
+  
+  .receiver-container .benefits-section li {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--text-color);
+  }
+  
+  .receiver-container .benefits-section li i {
+    color: var(--receiver-primary);
+    font-size: 1.2rem;
+  }
+  
+  .receiver-container footer {
+    background: var(--receiver-secondary);
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem;
+  }
+  
+  @media (max-width: 768px) {
+    .receiver-container main {
+      flex-direction: column;
+      padding: 1rem;
+    }
+  }
+  
+  /* Modal Styling */
+  .receiver-container .modal {
+    display: none;
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .receiver-container .modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 20px;
+    width: 80%;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .receiver-container .close {
+    color: red;
+    font-size: 28px;
+    cursor: pointer;
+    float: right;
+  }
+  
+  /* Checkbox Styling */
+  .receiver-container input[type="checkbox"] {
+    box-shadow: none;
+  }
+  
+  .receiver-container input[type="checkbox"]:hover {
+    box-shadow: none;
+  }
+  

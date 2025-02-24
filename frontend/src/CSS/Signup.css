@@ -1,0 +1,197 @@
+/* Signup Page Specific Styles */
+.sign-container-big {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 200px); /* Adjust based on header and footer height */
+  }
+  
+  .login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .login-card {
+    width: 100%;
+    max-width: 400px;
+    padding: 2.5rem;
+    background: var(--white);
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 1s ease-out;
+  }
+  
+  .login-card h2 {
+    text-align: center;
+    color: var(--receiver-primary);
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  
+  .form-group input:focus {
+    outline: none;
+    border-color: var(--receiver-primary);
+  }
+  
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+  }
+  
+  .btn-secondary {
+    background: var(--receiver-secondary);
+    color: var(--white);
+  }
+  
+  .btn-secondary:hover {
+    background: color-mix(in srgb, var(--receiver-secondary) 80%, white);
+  }
+  
+  .social-login {
+    margin-top: 1rem;
+  }
+  
+  .form-footer {
+    text-align: center;
+    margin-top: 1rem;
+  }
+  
+  .forgot-password {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--receiver-primary);
+    text-decoration: none;
+  }
+  
+  .error-message {
+    color: #e74c3c;
+    text-align: center;
+    margin-top: 1rem;
+  }
+  
+  :root {
+    --receiver-primary: #3a7ca5;
+    --receiver-secondary: #1e3f66;
+    --background-color: #f5f7fa;
+    --text-color: #2d3748;
+    --white: #ffffff;
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+  }
+  
+  body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, var(--background-color) 0%, #e0e7f0 100%);
+    color: var(--text-color);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  
+  .sign-container-big {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+  
+  /* Signup Page Styles */
+  .signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 200px);
+  }
+  
+  .signup-card {
+    width: 100%;
+    max-width: 400px;
+    padding: 2.5rem;
+    background: var(--white);
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 1s ease-out;
+  }
+  
+  .signup-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+  
+  .signup-icon {
+    font-size: 5rem;
+    color: var(--receiver-primary);
+    margin-right: 1.5rem;
+  }
+  
+  .signup-details {
+    text-align: left;
+  }
+  
+  .signup-email {
+    font-size: 1.1rem;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+  }
+  
+  .signup-password {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--receiver-primary);
+  }
+  
+  .signup-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .btn-confirm {
+    background: var(--receiver-secondary);
+    color: var(--white);
+  }
+  
+  .btn-confirm:hover {
+    background: color-mix(in srgb, var(--receiver-secondary) 80%, white);
+  }
+  
