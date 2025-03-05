@@ -1,0 +1,37 @@
+/* Theme Variables */
+:root {
+    --donor-bg: linear-gradient(135deg, #e8f5e9 0%, #f8fafc 100%);
+    --receiver-bg: linear-gradient(135deg, #e3f2fd 0%, #f8fafc 100%);
+    --delivery-bg: linear-gradient(135deg, #fff3e0 0%, #f8fafc 100%);
+    --default-bg: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+}
+
+/* App Container */
+.app {
+    min-height: 100vh;
+    background: var(--default-bg);
+}
+
+/* Theme-specific backgrounds */
+.app.donor-theme {
+    background: var(--donor-bg);
+}
+
+.app.receiver-theme {
+    background: var(--receiver-bg);
+}
+
+.app.delivery-theme {
+    background: var(--delivery-bg);
+}
+
+/* Content Container */
+.content-container {
+    min-height: calc(100vh - 64px); /* Adjust based on navbar height */
+    padding-bottom: 2rem; /* Space for footer */
+}
+
+/* Smooth theme transitions */
+.app {
+    transition: background 0.3s ease-in-out;
+}

@@ -15,8 +15,12 @@ import {
   FaFileAlt,
   FaUpload,
   FaHome,
+  FaCity,
+  FaMapSigns,
+  FaMailBulk,
+  FaTruck
 } from "react-icons/fa";
-import "../CSS/DeliveryPage.css";
+import "../CSS/Forms.css";
 
 const DeliveryPage = () => {
   const navigate = useNavigate();
@@ -27,9 +31,9 @@ const DeliveryPage = () => {
     number: "",
     website: "",
     registration_number: "",
-    vehicle_types: "", // Accepting user input as a string
+    vehicle_types: "",
     fleet_size: "",
-    building_name: "", // Added new field
+    building_name: "",
     street_address: "",
     city: "",
     state: "",
@@ -42,7 +46,6 @@ const DeliveryPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  // Handle input changes
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prevData) => ({
@@ -51,7 +54,6 @@ const DeliveryPage = () => {
     }));
   };
 
-  // Handle file upload
   const handleFileChange = (e) => {
     if (e.target.files.length > 0) {
       setFormData((prevData) => ({
@@ -61,249 +63,255 @@ const DeliveryPage = () => {
     }
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage("");
-    setSuccessMessage("");
-
-    if (!formData.terms_agreed) {
-      setErrorMessage("You must agree to the terms and conditions.");
-      return;
-    }
-
     const token = sessionStorage.getItem("token");
-    if (!token) {
-      setErrorMessage("Unauthorized: Please log in to continue.");
-      return;
-    }
-
-    const formDataToSend = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      if (value !== null) {
-        formDataToSend.append(key, value);
-      }
-    });
 
     try {
+      const formDataToSend = new FormData();
+      Object.keys(formData).forEach((key) => {
+        if (formData[key]) {
+          formDataToSend.append(key, formData[key]);
+        }
+      });
+
       const response = await axios.post(
-        "http://127.0.0.1:5000/delivery/register",
+        "http://localhost:5000/delivery/register",
         formDataToSend,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
           },
         }
       );
 
+      setSuccessMessage(response.data.message);
       if (response.status === 201) {
-        setSuccessMessage("Registration successful! Redirecting...");
-        sessionStorage.setItem("user", JSON.stringify(response.data.user));
-        setTimeout(() => navigate("/"), 2000);
+        navigate('/');
+        const user = response.data.user;
+        sessionStorage.setItem("user", JSON.stringify(user));
       }
     } catch (error) {
-      setErrorMessage(error.response?.data?.message || "Registration failed.");
+      setErrorMessage(error.response?.data?.error || "Failed to register. Please try again.");
     }
   };
 
   return (
-    <div className="delivery-container">
-      <header>
-        <h1>Partner Registration</h1>
-      </header>
+    <div className="form-container delivery-form">
+      <div className="form-header">
+        <h2>Delivery Partner Registration</h2>
+        <p>Join our network of delivery partners and help connect donors with receivers</p>
+      </div>
 
-      <main>
-        <section className="form-section">
-          <form className="deliveryform" onSubmit={handleSubmit}>
-            {/* Basic Information */}
-            <h2>Basic Information</h2>
-            <div>
-              <label>
-                <FaBuilding /> Company/Individual Name:
-              </label>
-              <input
-                type="text"
-                name="company_name"
-                value={formData.company_name}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label>
-                <FaUser /> Contact Person Name:
-              </label>
-              <input
-                type="text"
-                name="person_name"
-                value={formData.person_name}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label>
-                <FaEnvelope /> Contact Email:
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label>
-                <FaPhone /> Contact Number:
-              </label>
-              <input
-                type="tel"
-                name="number"
-                value={formData.number}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label>
-                <FaGlobe /> Website/Social Media Handle (optional):
-              </label>
-              <input
-                type="url"
-                name="website"
-                value={formData.website}
-                onChange={handleChange}
-              />
-            </div>
+      {errorMessage && <div className="message error-message">{errorMessage}</div>}
+      {successMessage && <div className="message success-message">{successMessage}</div>}
 
-            {/* Business Details */}
-            <h2>Business/Individual Details</h2>
-            <div>
-              <label>
-                <FaIdCard /> Registration Number/License ID:
-              </label>
-              <input
-                type="text"
-                name="registration_number"
-                value={formData.registration_number}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label>
-                <FaCar /> Vehicle Type(s):
-              </label>
-              <input
-                type="text"
-                name="vehicle_types"
-                value={formData.vehicle_types}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label>
-                <FaBus /> Fleet Size:
-              </label>
-              <input
-                type="number"
-                name="fleet_size"
-                value={formData.fleet_size}
-                onChange={handleChange}
-                required
-              />
-            </div>
+      <form onSubmit={handleSubmit} encType="multipart/form-data">
+        <div className="form-section">
+          <h3><FaUser /> Basic Information</h3>
+          
+          <div className="form-group">
+            <label><FaBuilding /> Company/Individual Name</label>
+            <input
+              type="text"
+              name="company_name"
+              className="form-input"
+              value={formData.company_name}
+              placeholder="Enter company or individual name"
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-            {/* Address Details */}
-            <h2>
-              <FaMapMarkerAlt /> Address Details
-            </h2>
-            <div>
-              <label>
-                <FaHome /> Building Name:
-              </label>
-              <input
-                type="text"
-                name="building_name"
-                value={formData.building_name}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label>Street Address:</label>
-              <input
-                type="text"
-                name="street_address"
-                value={formData.street_address}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label>City:</label>
-              <input
-                type="text"
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label>State/Region:</label>
-              <input
-                type="text"
-                name="state_region"
-                value={formData.state_region}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label>Postal/ZIP Code:</label>
-              <input
-                type="text"
-                name="postal_code"
-                value={formData.postal_code}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label>Country:</label>
-              <input
-                type="text"
-                name="country"
-                value={formData.country}
-                onChange={handleChange}
-                required
-              />
-            </div>
+          <div className="form-group">
+            <label><FaUser /> Contact Person Name</label>
+            <input
+              type="text"
+              name="person_name"
+              className="form-input"
+              value={formData.person_name}
+              placeholder="Enter contact person name"
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-            {/* Terms & File Upload */}
-            <h2>
-              <FaFileAlt /> Terms of Service
-            </h2>
-            <div>
-              <input
-                type="checkbox"
-                name="terms_agreed"
-                checked={formData.terms_agreed}
-                onChange={handleChange}
-                required
-              />
-              <label>
-                I agree to the <a href="#">Terms and Conditions</a>.
-              </label>
-            </div>
-            <div>
-              <label>
-                <FaUpload /> Upload ID Proof:
-              </label>
+          <div className="form-group">
+            <label><FaEnvelope /> Email Address</label>
+            <input
+              type="email"
+              name="email"
+              className="form-input"
+              value={formData.email}
+              placeholder="Enter email address"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label><FaPhone /> Contact Number</label>
+            <input
+              type="tel"
+              name="number"
+              className="form-input"
+              value={formData.number}
+              placeholder="Enter contact number"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label><FaGlobe /> Website (Optional)</label>
+            <input
+              type="url"
+              name="website"
+              className="form-input"
+              value={formData.website}
+              placeholder="Enter website URL"
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+
+        <div className="form-section">
+          <h3><FaTruck /> Vehicle Information</h3>
+          
+          <div className="form-group">
+            <label><FaIdCard /> Registration Number</label>
+            <input
+              type="text"
+              name="registration_number"
+              className="form-input"
+              value={formData.registration_number}
+              placeholder="Enter vehicle registration number"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label><FaCar /> Vehicle Types</label>
+            <input
+              type="text"
+              name="vehicle_types"
+              className="form-input"
+              value={formData.vehicle_types}
+              placeholder="Enter types of vehicles (e.g., Van, Truck)"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label><FaBus /> Fleet Size</label>
+            <input
+              type="number"
+              name="fleet_size"
+              className="form-input"
+              value={formData.fleet_size}
+              placeholder="Enter number of vehicles"
+              onChange={handleChange}
+              required
+            />
+          </div>
+        </div>
+
+        <div className="form-section">
+          <h3><FaMapMarkerAlt /> Address Details</h3>
+          
+          <div className="form-group">
+            <label><FaHome /> Building Name</label>
+            <input
+              type="text"
+              name="building_name"
+              className="form-input"
+              value={formData.building_name}
+              placeholder="Enter building name"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label><FaMapSigns /> Street Address</label>
+            <input
+              type="text"
+              name="street_address"
+              className="form-input"
+              value={formData.street_address}
+              placeholder="Enter street address"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label><FaCity /> City</label>
+            <input
+              type="text"
+              name="city"
+              className="form-input"
+              value={formData.city}
+              placeholder="Enter city"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label><FaMapSigns /> State/Region</label>
+            <input
+              type="text"
+              name="state"
+              className="form-input"
+              value={formData.state}
+              placeholder="Enter state or region"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label><FaMailBulk /> Postal/ZIP Code</label>
+            <input
+              type="text"
+              name="postal_code"
+              className="form-input"
+              value={formData.postal_code}
+              placeholder="Enter postal or ZIP code"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label><FaGlobe /> Country</label>
+            <input
+              type="text"
+              name="country"
+              className="form-input"
+              value={formData.country}
+              placeholder="Enter country"
+              onChange={handleChange}
+              required
+            />
+          </div>
+        </div>
+
+        <div className="form-section">
+          <h3><FaFileAlt /> Verification</h3>
+          
+          <div className="form-group">
+            <label><FaUpload /> ID Proof</label>
+            <div className="file-upload">
+              <div className="file-upload-text">
+                <FaUpload />
+                <span>Click to upload or drag and drop</span>
+                <span>Supported formats: JPG, PNG, PDF</span>
+              </div>
               <input
                 type="file"
                 name="id_proof"
@@ -312,16 +320,27 @@ const DeliveryPage = () => {
                 required
               />
             </div>
+          </div>
 
-            <button type="submit">
-              <FaPaperPlane /> Register
-            </button>
+          <div className="checkbox-group">
+            <input
+              type="checkbox"
+              id="terms_agreed"
+              name="terms_agreed"
+              checked={formData.terms_agreed}
+              onChange={handleChange}
+              required
+            />
+            <label htmlFor="terms_agreed">
+              I agree to the <a href="#">Terms and Conditions</a>
+            </label>
+          </div>
+        </div>
 
-            {errorMessage && <p className="error">{errorMessage}</p>}
-            {successMessage && <p className="success">{successMessage}</p>}
-          </form>
-        </section>
-      </main>
+        <button type="submit" className="submit-button">
+          <FaPaperPlane /> Register as Delivery Partner
+        </button>
+      </form>
     </div>
   );
 };

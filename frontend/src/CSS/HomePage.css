@@ -1,12 +1,13 @@
 .homepage-container {
-    /* Scoped container styles */
-    flex: 1; /* Allows the main content to expand */
+    flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Centers content vertically */
-    align-items: center; /* Centers content horizontally */
-    text-align: center; /* Aligns text in the center */
-    padding: 2rem; /* Adds spacing around content */
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+    min-height: calc(100vh - 150px); /* Account for navbar and footer */
 }
 
 .homepage-container .container {
@@ -16,82 +17,122 @@
 }
 
 /* Intro Section */
-.homepage-container .intro-box {
-    background: linear-gradient(135deg, #5f6aff, #363e5f);
+.intro-box {
+    background: linear-gradient(135deg, #2C3E50, #3498db);
     color: white;
-    padding: 2rem;
-    border-radius: 10px;
+    padding: 2.5rem 3rem;
+    border-radius: 20px;
     text-align: center;
-    max-width: 600px;
-    margin: 2rem auto;
+    max-width: 800px;
+    margin: 0 auto 4rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transform: translateY(0);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.homepage-container .intro-box p {
+.intro-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.intro-box p {
+    font-size: 1.5rem;
+    line-height: 1.6;
     margin: 0;
-    opacity: 0.9;
+    font-weight: 300;
+    letter-spacing: 0.5px;
 }
 
 /* Cards Section */
-.homepage-container .cards-section {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    flex-wrap: wrap;
+.cards-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2.5rem;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
 }
 
-.homepage-container .card {
-    background: var(--white);
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
     text-align: center;
-    padding: 2rem;
-    transition: 0.3s ease;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
-.homepage-container .card:hover {
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: var(--card-accent-color);
+}
+
+.donor-card {
+    --card-accent-color: #27ae60;
+}
+
+.receiver-card {
+    --card-accent-color: #3498db;
+}
+
+.delivery-card {
+    --card-accent-color: #e67e22;
+}
+
+.card:hover {
     transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
-.homepage-container .card i {
-    font-size: 3rem;
+.card i {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--card-accent-color);
+    transition: transform 0.3s ease;
+}
+
+.card:hover i {
+    transform: scale(1.1);
+}
+
+.card h2 {
+    font-size: 1.8rem;
     margin-bottom: 1rem;
+    color: #2c3e50;
 }
 
-.homepage-container .donor-card i {
-    color: var(--donor-primary);
+.card p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #666;
+    margin-bottom: 2rem;
 }
 
-.homepage-container .receiver-card i {
-    color: var(--receiver-primary);
-}
-
-.homepage-container .delivery-card i {
-    color: var(--delivery-primary);
-}
-
-.homepage-container .card h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-}
-
-/* Styling for Link components inside .card */
-.homepage-container .card a, 
-.homepage-container .card .link {
+.card a {
     display: inline-block;
-    background: var(--donor-primary);
-    color: var(--white);
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-weight: 600;
+    padding: 1rem 2rem;
+    background: var(--card-accent-color);
+    color: white;
     text-decoration: none;
-    transition: 0.3s ease;
+    border-radius: 30px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-/* Hover effect for links */
-.homepage-container .card a:hover, 
-.homepage-container .card .link:hover {
-    background: var(--white);
-    color: var(--donor-primary);
+.card a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    background: color-mix(in srgb, var(--card-accent-color) 85%, black);
 }
 
 /* Footer */
@@ -101,3 +142,49 @@
     text-align: center;
     padding: 1.5rem;
 }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .homepage-container {
+        padding: 2rem 1rem;
+    }
+
+    .intro-box {
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .intro-box p {
+        font-size: 1.2rem;
+    }
+
+    .cards-section {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .card {
+        padding: 2rem 1.5rem;
+    }
+}
+
+/* Animation Keyframes */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Apply animations to elements */
+.intro-box, .card {
+    animation: fadeIn 0.8s ease-out forwards;
+}
+
+.card:nth-child(1) { animation-delay: 0.2s; }
+.card:nth-child(2) { animation-delay: 0.4s; }
+.card:nth-child(3) { animation-delay: 0.6s; }

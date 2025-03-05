@@ -1,16 +1,22 @@
 .navbar-container {
-    background: linear-gradient(135deg, #2C3E50, #34495E);
-    color: var(--white);
-    padding: 1.5rem 2rem;
+    background-color: #ffffff;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .navbar-container h1 {
-    font-size: 2rem;
-    font-weight: 700;
     margin: 0;
+    font-size: 1.5rem;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 /* Remove default link styling (blue color and underline) */
@@ -19,55 +25,71 @@
     color: var(--white); /* Set the color to white */
 }
 
-.navbar-container .header-buttons {
+.header-buttons {
     display: flex;
     gap: 1rem;
+    align-items: center;
 }
 
-.navbar-container .header-buttons .button {
-    color: var(--white);
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    text-transform: uppercase;
-    font-weight: 600;
+.header-buttons a,
+.header-buttons button {
     text-decoration: none;
-    transition: 0.3s ease;
-}
-
-.navbar-container .header-buttons .button:hover {
-    background: var(--white);
-    color: var(--donor-primary);
-}
-
-/* Additional styles for links inside header-buttons */
-.navbar-container .header-buttons a {
-    color: var(--white);  /* Set link color to white */
-    font-weight: 600;
-    text-decoration: none;
+    color: #2c3e50;
     padding: 0.5rem 1rem;
-    border-radius: 20px;
-    transition: background 0.3s ease, color 0.3s ease;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-weight: 500;
 }
 
-.navbar-container .header-buttons a:hover {
-    background: var(--white);
-    color: var(--donor-primary); /* Change color on hover */
+.header-buttons a:hover,
+.header-buttons button:hover {
+    background-color: #f1f5f9;
+    color: #1e293b;
 }
 
-/* Specific button styles for Logout */
-.navbar-container .header-buttons button {
+.header-buttons button {
     background: none;
-    border: 2px solid var(--white);
-    color: var(--white);
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    text-transform: uppercase;
-    font-weight: 600;
+    border: none;
     cursor: pointer;
-    transition: background 0.3s ease, color 0.3s ease;
+    font-size: 1rem;
 }
 
-.navbar-container .header-buttons button:hover {
-    background: var(--white);
-    color: var(--donor-primary); /* Change color on hover */
+/* Profile Link Styles */
+.profile-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.profile-link:hover {
+    background-color: #f1f5f9;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+}
+
+.profile-link svg {
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+    .navbar-container {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .header-buttons {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .navbar-container h1 {
+        font-size: 1.2rem;
+    }
 }

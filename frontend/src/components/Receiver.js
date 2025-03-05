@@ -22,13 +22,15 @@ import {
   FaCheckCircle,
   FaHeart,
   FaPaperPlane,
+  FaEnvelope,
+  FaUpload
 } from "react-icons/fa";
-import "../CSS/Receiver.css";
+import "../CSS/Forms.css";
 import { useNavigate } from "react-router-dom";
 
 const Receiver = () => {
   const navigate = useNavigate();
-  const token =  sessionStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
   const [formData, setFormData] = useState({
     ngo_name: "",
     contact_person: "",
@@ -52,8 +54,11 @@ const Receiver = () => {
     delivery_method: "direct",
     preferred_delivery_time: "",
     warehouse_details: "",
-    id_proof: null, // File upload
+    id_proof: null,
   });
+
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value, type } = e.target;
@@ -66,302 +71,303 @@ const Receiver = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const formDataToSend = new FormData();
       Object.keys(formData).forEach((key) => {
-        formDataToSend.append(key, formData[key]);
+        if (formData[key]) {
+          formDataToSend.append(key, formData[key]);
+        }
       });
 
       const response = await axios.post(
         "http://localhost:5000/receiver/register",
         formDataToSend,
         {
-          headers: { 
+          headers: {
+            "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data" },
+          },
         }
       );
 
-      alert(response.data.message);
-      if(response.status == 201){
-        const user = response.data.user;
-        sessionStorage.setItem("user", user);
-
+      setSuccessMessage(response.data.message);
+      if (response.status === 201) {
         navigate('/');
+        const user = response.data.user;
+        sessionStorage.setItem("user", JSON.stringify(user));
       }
     } catch (error) {
-      console.error("Error:", error.response?.data || error.message);
-      alert("Registration failed!");
+      setErrorMessage(error.response?.data?.error || "Failed to register. Please try again.");
     }
   };
 
   return (
-    <div className="receiver-container">
-      <main>
-        <section className="form-section">
-          <form
-            className="receiverform"
-            onSubmit={handleSubmit}
-            encType="multipart/form-data"
-          >
-            <h2>
-              <FaUser /> Basic Info
-            </h2>
-            <div>
-              <label htmlFor="ngo_name">
-                <FaBuilding /> NGO Name:
-              </label>
-              <input
-                type="text"
-                id="ngo_name"
-                name="ngo_name"
-                value={formData.ngo_name}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="contact_person">
-                <FaUser /> Contact Person:
-              </label>
-              <input
-                type="text"
-                id="contact_person"
-                name="contact_person"
-                value={formData.contact_person}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="contact_number">
-                <FaPhone /> Contact Number:
-              </label>
-              <input
-                type="tel"
-                id="contact_number"
-                name="contact_number"
-                value={formData.contact_number}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="email">
-                <FaMailBulk /> Email:
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-            </div>
+    <div className="form-container receiver-form">
+      <div className="form-header">
+        <h2>NGO/Receiver Registration</h2>
+        <p>Help us distribute food to those who need it most</p>
+      </div>
 
-            <h2>
-              <FaMapMarkerAlt /> Address Details
-            </h2>
-            <div>
-              <label htmlFor="building_name">
-                <FaBuilding /> Building Name:
-              </label>
-              <input
-                type="text"
-                id="building_name"
-                name="building_name"
-                value={formData.building_name}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="street_name">
-                <FaMapMarkerAlt /> Street Name:
-              </label>
-              <input
-                type="text"
-                id="street_name"
-                name="street_name"
-                value={formData.street_name}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="shop_number">
-                <FaFileAlt /> Shop Number (Optional):
-              </label>
-              <input
-                type="text"
-                id="shop_number"
-                name="shop_number"
-                value={formData.shop_number}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="city">
-                <FaCity /> City:
-              </label>
-              <input
-                type="text"
-                id="city"
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="state">
-                <FaCity /> State:
-              </label>
-              <input
-                type="text"
-                id="state"
-                name="state"
-                value={formData.state}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="zip_code">
-                <FaMailBulk /> Zip Code:
-              </label>
-              <input
-                type="text"
-                id="zip_code"
-                name="zip_code"
-                value={formData.zip_code}
-                onChange={handleChange}
-                required
-              />
-            </div>
+      {errorMessage && <div className="message error-message">{errorMessage}</div>}
+      {successMessage && <div className="message success-message">{successMessage}</div>}
 
-            <h2>
-              <FaBuilding /> NGO Information
-            </h2>
-            <div>
-              <label htmlFor="website">
-                <FaGlobe /> Website/Social Media:
-              </label>
-              <input
-                type="url"
-                id="website"
-                name="website"
-                value={formData.website}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="registration_number">
-                <FaIdCard /> Registration Number:
-              </label>
-              <input
-                type="text"
-                id="registration_number"
-                name="registration_number"
-                value={formData.registration_number}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="id_proof">
-                <FaIdCard /> ID Proof (PDF/JPG/PNG):
-              </label>
+      <form onSubmit={handleSubmit} encType="multipart/form-data">
+        <div className="form-section">
+          <h3><FaUser /> Basic Information</h3>
+          
+          <div className="form-group">
+            <label><FaBuilding /> NGO Name</label>
+            <input
+              type="text"
+              name="ngo_name"
+              className="form-input"
+              value={formData.ngo_name}
+              placeholder="Enter NGO name"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label><FaUser /> Contact Person</label>
+            <input
+              type="text"
+              name="contact_person"
+              className="form-input"
+              value={formData.contact_person}
+              placeholder="Enter contact person name"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label><FaPhone /> Contact Number</label>
+            <input
+              type="tel"
+              name="contact_number"
+              className="form-input"
+              value={formData.contact_number}
+              placeholder="Enter contact number"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label><FaEnvelope /> Email</label>
+            <input
+              type="email"
+              name="email"
+              className="form-input"
+              value={formData.email}
+              placeholder="Enter email address"
+              onChange={handleChange}
+              required
+            />
+          </div>
+        </div>
+
+        <div className="form-section">
+          <h3><FaMapMarkerAlt /> Address Details</h3>
+          
+          <div className="form-group">
+            <label><FaBuilding /> Building Name</label>
+            <input
+              type="text"
+              name="building_name"
+              className="form-input"
+              value={formData.building_name}
+              placeholder="Enter building name"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label><FaMapMarkerAlt /> Street Name</label>
+            <input
+              type="text"
+              name="street_name"
+              className="form-input"
+              value={formData.street_name}
+              placeholder="Enter street name"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label><FaBuilding /> Shop/Office Number</label>
+            <input
+              type="text"
+              name="shop_number"
+              className="form-input"
+              value={formData.shop_number}
+              placeholder="Enter shop/office number"
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label><FaCity /> City</label>
+            <input
+              type="text"
+              name="city"
+              className="form-input"
+              value={formData.city}
+              placeholder="Enter city"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label><FaCity /> State</label>
+            <input
+              type="text"
+              name="state"
+              className="form-input"
+              value={formData.state}
+              placeholder="Enter state"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label><FaMailBulk /> ZIP Code</label>
+            <input
+              type="text"
+              name="zip_code"
+              className="form-input"
+              value={formData.zip_code}
+              placeholder="Enter ZIP code"
+              onChange={handleChange}
+              required
+            />
+          </div>
+        </div>
+
+        <div className="form-section">
+          <h3><FaBuilding /> NGO Information</h3>
+          
+          <div className="form-group">
+            <label><FaGlobe /> Website/Social Media</label>
+            <input
+              type="url"
+              name="website"
+              className="form-input"
+              value={formData.website}
+              placeholder="Enter website or social media URL"
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label><FaIdCard /> Registration Number</label>
+            <input
+              type="text"
+              name="registration_number"
+              className="form-input"
+              value={formData.registration_number}
+              placeholder="Enter NGO registration number"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label><FaUpload /> ID Proof</label>
+            <div className="file-upload">
+              <div className="file-upload-text">
+                <FaUpload />
+                <span>Click to upload or drag and drop</span>
+                <span>Supported formats: PDF, JPG, PNG</span>
+              </div>
               <input
                 type="file"
-                id="id_proof"
                 name="id_proof"
                 accept=".pdf,.jpg,.png"
                 onChange={handleChange}
                 required
               />
             </div>
-            <div>
-              <label htmlFor="ngo_gov_no">
-                <FaFileAlt /> NGO Gov No.:
-              </label>
-              <input
-                type="text"
-                id="ngo_gov_no"
-                name="ngo_gov_no"
-                value={formData.ngo_gov_no}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="date_of_establishment">
-                <FaCalendarAlt /> Date of Establishment:
-              </label>
-              <input
-                type="date"
-                id="date_of_establishment"
-                name="date_of_establishment"
-                value={formData.date_of_establishment}
-                onChange={handleChange}
-                required
-              />
-            </div>
+          </div>
 
-            <h2>
-              <FaTruck /> Delivery & Logistics
-            </h2>
-            
-            <div>
-              <label htmlFor="delivery_method">
-                <FaTruckPickup /> Delivery Method:
-              </label>
-              <select
-                id="delivery_method"
-                name="delivery_method"
-                value={formData.delivery_method}
-                onChange={handleChange}
-                required
-              >
-                <option value="direct">Direct</option>
-                <option value="courier">Courier</option>
-              </select>
-            </div>
-            <div>
-              <label htmlFor="preferred_delivery_time">
-                <FaClock /> Preferred Delivery Time:
-              </label>
-              <input
-                type="time"
-                id="preferred_delivery_time"
-                name="preferred_delivery_time"
-                value={formData.preferred_delivery_time}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="warehouse_details">
-                <FaWarehouse /> Warehouse Details:
-              </label>
-              <input
-                type="text"
-                id="warehouse_details"
-                name="warehouse_details"
-                value={formData.warehouse_details}
-                onChange={handleChange}
-                required
-              />
-            </div>
+          <div className="form-group">
+            <label><FaFileAlt /> NGO Government Number</label>
+            <input
+              type="text"
+              name="ngo_gov_no"
+              className="form-input"
+              value={formData.ngo_gov_no}
+              placeholder="Enter NGO government number"
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-            <button type="submit">
-              <FaPaperPlane /> Submit
-            </button>
-          </form>
-        </section>
-      </main>
+          <div className="form-group">
+            <label><FaCalendarAlt /> Date of Establishment</label>
+            <input
+              type="date"
+              name="date_of_establishment"
+              className="form-input"
+              value={formData.date_of_establishment}
+              onChange={handleChange}
+              required
+            />
+          </div>
+        </div>
+
+        <div className="form-section">
+          <h3><FaTruck /> Delivery & Logistics</h3>
+          
+          <div className="form-group">
+            <label><FaTruckPickup /> Delivery Method</label>
+            <select
+              name="delivery_method"
+              className="form-input"
+              value={formData.delivery_method}
+              onChange={handleChange}
+              required
+            >
+              <option value="direct">Direct Pickup</option>
+              <option value="courier">Courier Service</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label><FaClock /> Preferred Delivery Time</label>
+            <input
+              type="time"
+              name="preferred_delivery_time"
+              className="form-input"
+              value={formData.preferred_delivery_time}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label><FaWarehouse /> Warehouse Details</label>
+            <input
+              type="text"
+              name="warehouse_details"
+              className="form-input"
+              value={formData.warehouse_details}
+              placeholder="Enter warehouse/storage facility details"
+              onChange={handleChange}
+              required
+            />
+          </div>
+        </div>
+
+        <button type="submit" className="submit-button">
+          <FaPaperPlane /> Register as Receiver
+        </button>
+      </form>
     </div>
   );
 };

@@ -13,9 +13,12 @@ import {
   FaCertificate,
   FaFileAlt,
   FaPaperPlane,
+  FaBuilding,
+  FaCalendarAlt,
+  FaUpload
 } from "react-icons/fa";
-import "../CSS/Donor.css";
-import { Navigate, useNavigate } from "react-router-dom";
+import "../CSS/Forms.css";
+import { useNavigate } from "react-router-dom";
 
 const Donor = () => {
   const [formData, setFormData] = useState({
@@ -35,15 +38,15 @@ const Donor = () => {
     terms_agreed: false,
   });
 
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
 
-  // Handle input changes (text, checkbox, file uploads)
   const handleChange = (e) => {
     const { name, type, value, checked, files } = e.target;
 
     if (type === "file") {
       setFormData({ ...formData, [name]: files[0] });
-      console.log("File Selected:", files[0]);
     } else if (type === "checkbox") {
       setFormData({ ...formData, [name]: checked });
     } else {
@@ -51,15 +54,12 @@ const Donor = () => {
     }
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = sessionStorage.getItem("token");
 
     try {
       const formDataToSend = new FormData();
-
-      // Append only non-null values
       Object.keys(formData).forEach((key) => {
         if (formData[key]) {
           formDataToSend.append(key, formData[key]);
@@ -77,204 +77,237 @@ const Donor = () => {
         }
       );
 
-      alert(response.data.message);
-      if(response.status == 201){
+      setSuccessMessage(response.data.message);
+      if(response.status === 201){
         navigate('/');
         const user = response.data.user;
         sessionStorage.setItem("user", JSON.stringify(user));
       }
     } catch (error) {
-      console.error("Error registering donor:", error.response?.data || error);
-      alert("Failed to register. Please try again.");
+      setErrorMessage(error.response?.data?.error || "Failed to register. Please try again.");
     }
   };
 
   return (
-    <div className="donor-container">
-      <form
-        className="donorform"
-        onSubmit={handleSubmit}
-        encType="multipart/form-data"
-      >
-        <h3>
-          <FaInfoCircle /> Donor Information
-        </h3>
+    <div className="form-container donor-form">
+      <div className="form-header">
+        <h2>Become a Food Donor</h2>
+        <p>Join us in reducing food waste and helping those in need</p>
+      </div>
 
-        <label>
-          <FaUser /> Full Name:
-        </label>
-        <input
-          type="text"
-          name="full_name"
-          value={formData.full_name}
-          placeholder="Enter full name"
-          onChange={handleChange}
-          required
-        />
+      {errorMessage && <div className="message error-message">{errorMessage}</div>}
+      {successMessage && <div className="message success-message">{successMessage}</div>}
 
-        <label>
-          <FaEnvelope /> Email:
-        </label>
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          placeholder="Enter email"
-          onChange={handleChange}
-          required
-        />
+      <form onSubmit={handleSubmit} encType="multipart/form-data">
+        <div className="form-section">
+          <h3><FaInfoCircle /> Basic Information</h3>
+          
+          <div className="form-group">
+            <label><FaUser /> Full Name</label>
+            <input
+              type="text"
+              name="full_name"
+              className="form-input"
+              value={formData.full_name}
+              placeholder="Enter your full name"
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <label>
-          <FaUser /> Restaurant Name (Optional):
-        </label>
-        <input
-          type="text"
-          name="restaurant_name"
-          value={formData.restaurant_name}
-          placeholder="Enter restaurant name"
-          onChange={handleChange}
-        />
+          <div className="form-group">
+            <label><FaEnvelope /> Email</label>
+            <input
+              type="email"
+              name="email"
+              className="form-input"
+              value={formData.email}
+              placeholder="Enter your email"
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <label>
-          <FaPhone /> Contact Number:
-        </label>
-        <input
-          type="tel"
-          name="contact_number"
-          value={formData.contact_number}
-          placeholder="Enter contact number"
-          onChange={handleChange}
-          required
-        />
+          <div className="form-group">
+            <label><FaBuilding /> Restaurant Name (Optional)</label>
+            <input
+              type="text"
+              name="restaurant_name"
+              className="form-input"
+              value={formData.restaurant_name}
+              placeholder="Enter restaurant name if applicable"
+              onChange={handleChange}
+            />
+          </div>
 
-        <h3>
-          <FaMapMarkerAlt /> Address Details
-        </h3>
-
-        <label>Building Name:</label>
-        <input
-          type="text"
-          name="building_name"
-          value={formData.building_name}
-          placeholder="Enter building name"
-          onChange={handleChange}
-          required
-        />
-
-        <label>Street Name:</label>
-        <input
-          type="text"
-          name="street_name"
-          value={formData.street_name}
-          placeholder="Enter street name"
-          onChange={handleChange}
-          required
-        />
-
-        <label>Shop Number (Optional):</label>
-        <input
-          type="text"
-          name="shop_number"
-          value={formData.shop_number}
-          placeholder="Enter shop number"
-          onChange={handleChange}
-        />
-
-        <label>
-          <FaCity /> City:
-        </label>
-        <input
-          type="text"
-          name="city"
-          value={formData.city}
-          placeholder="Enter city"
-          onChange={handleChange}
-          required
-        />
-
-        <label>
-          <FaMapSigns /> State:
-        </label>
-        <input
-          type="text"
-          name="state"
-          value={formData.state}
-          placeholder="Enter state"
-          onChange={handleChange}
-          required
-        />
-
-        <label>
-          <FaMailBulk /> Zip Code:
-        </label>
-        <input
-          type="text"
-          name="zip_code"
-          value={formData.zip_code}
-          placeholder="Enter ZIP code"
-          onChange={handleChange}
-          required
-        />
-
-        <h3>Food Donation Details</h3>
-        <label>Donation Frequency:</label>
-        <select
-          name="donation_frequency"
-          value={formData.donation_frequency}
-          onChange={handleChange}
-          required
-        >
-          <option value="">Select Frequency</option>
-          <option value="One-time">One-time</option>
-          <option value="Daily">Daily</option>
-          <option value="Weekly">Weekly</option>
-          <option value="Bi-Weekly">Bi-Weekly</option>
-          <option value="Monthly">Monthly</option>
-        </select>
-
-        <h3>Verification & Compliance</h3>
-        <label>
-          <FaIdCard /> ID Proof (JPEG, PNG, PDF):
-        </label>
-        <input
-          type="file"
-          name="id_proof"
-          accept="image/png, image/jpeg, application/pdf"
-          onChange={handleChange}
-          required
-        />
-
-        <label>
-          <FaCertificate /> FSSAI ID:
-        </label>
-        <input
-          type="text"
-          name="fssai_id"
-          value={formData.fssai_id}
-          placeholder="Enter FSSAI ID"
-          onChange={handleChange}
-          required
-        />
-
-        <h3>
-          <FaFileAlt /> Terms of Service
-        </h3>
-        <div className="terms-section">
-          <input
-            type="checkbox"
-            id="terms_agreed"
-            name="terms_agreed"
-            checked={formData.terms_agreed}
-            onChange={handleChange}
-            required
-          />
-          <label htmlFor="terms_agreed">
-            I agree to the <a href="#">Terms and Conditions</a>.
-          </label>
+          <div className="form-group">
+            <label><FaPhone /> Contact Number</label>
+            <input
+              type="tel"
+              name="contact_number"
+              className="form-input"
+              value={formData.contact_number}
+              placeholder="Enter your contact number"
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
 
-        <button type="submit">
-          <FaPaperPlane /> Register
+        <div className="form-section">
+          <h3><FaMapMarkerAlt /> Address Details</h3>
+          
+          <div className="form-group">
+            <label><FaBuilding /> Building Name</label>
+            <input
+              type="text"
+              name="building_name"
+              className="form-input"
+              value={formData.building_name}
+              placeholder="Enter building name"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label><FaMapSigns /> Street Name</label>
+            <input
+              type="text"
+              name="street_name"
+              className="form-input"
+              value={formData.street_name}
+              placeholder="Enter street name"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label><FaBuilding /> Shop Number (Optional)</label>
+            <input
+              type="text"
+              name="shop_number"
+              className="form-input"
+              value={formData.shop_number}
+              placeholder="Enter shop number if applicable"
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label><FaCity /> City</label>
+            <input
+              type="text"
+              name="city"
+              className="form-input"
+              value={formData.city}
+              placeholder="Enter city"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label><FaMapSigns /> State</label>
+            <input
+              type="text"
+              name="state"
+              className="form-input"
+              value={formData.state}
+              placeholder="Enter state"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label><FaMailBulk /> ZIP Code</label>
+            <input
+              type="text"
+              name="zip_code"
+              className="form-input"
+              value={formData.zip_code}
+              placeholder="Enter ZIP code"
+              onChange={handleChange}
+              required
+            />
+          </div>
+        </div>
+
+        <div className="form-section">
+          <h3><FaCalendarAlt /> Donation Details</h3>
+          
+          <div className="form-group">
+            <label><FaCalendarAlt /> Donation Frequency</label>
+            <select
+              name="donation_frequency"
+              className="form-input"
+              value={formData.donation_frequency}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select Frequency</option>
+              <option value="One-time">One-time</option>
+              <option value="Daily">Daily</option>
+              <option value="Weekly">Weekly</option>
+              <option value="Bi-Weekly">Bi-Weekly</option>
+              <option value="Monthly">Monthly</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="form-section">
+          <h3><FaIdCard /> Verification</h3>
+          
+          <div className="form-group">
+            <label><FaUpload /> ID Proof</label>
+            <div className="file-upload">
+              <div className="file-upload-text">
+                <FaUpload />
+                <span>Click to upload or drag and drop</span>
+                <span>Supported formats: JPEG, PNG, PDF</span>
+              </div>
+              <input
+                type="file"
+                name="id_proof"
+                accept="image/png, image/jpeg, application/pdf"
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label><FaCertificate /> FSSAI ID</label>
+            <input
+              type="text"
+              name="fssai_id"
+              className="form-input"
+              value={formData.fssai_id}
+              placeholder="Enter FSSAI ID"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="checkbox-group">
+            <input
+              type="checkbox"
+              id="terms_agreed"
+              name="terms_agreed"
+              checked={formData.terms_agreed}
+              onChange={handleChange}
+              required
+            />
+            <label htmlFor="terms_agreed">
+              I agree to the <a href="#">Terms and Conditions</a>
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" className="submit-button">
+          <FaPaperPlane /> Register as Donor
         </button>
       </form>
     </div>

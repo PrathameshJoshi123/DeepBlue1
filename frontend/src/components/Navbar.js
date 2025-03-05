@@ -1,19 +1,78 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import "../CSS/Navbar.css";
 import axios from 'axios';
+import { FaUser } from 'react-icons/fa';
+import { useLanguage } from '../context/LanguageContext';
+import LanguageSelector from './LanguageSelector';
 
 const Navbar = () => {
-  const navigate = useNavigate(); // useNavigate hook to handle navigation
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState('');
+  const navigate = useNavigate();
+  const { language } = useLanguage();
 
-  // Logout function
+  const messages = {
+    home: {
+      'en': 'Home',
+      'hi': 'होम'
+    },
+    about: {
+      'en': 'About Us',
+      'hi': 'हमारे बारे में'
+    },
+    login: {
+      'en': 'Login',
+      'hi': 'लॉग इन'
+    },
+    signup: {
+      'en': 'Sign Up',
+      'hi': 'साइन अप'
+    },
+    profile: {
+      'en': 'Profile',
+      'hi': 'प्रोफ़ाइल'
+    },
+    logout: {
+      'en': 'Logout',
+      'hi': 'लॉग आउट'
+    },
+    makeDonation: {
+      'en': 'Make Donation',
+      'hi': 'दान करें'
+    },
+    dashboard: {
+      'en': 'Dashboard',
+      'hi': 'डैशबोर्ड'
+    },
+    title: {
+      'en': 'Urban Food Waste Management',
+      'hi': 'शहरी खाद्य अपशिष्ट प्रबंधन'
+    }
+  };
+
+  const getMessage = (path) => {
+    const langCode = language.split('-')[0];
+    return path[langCode] || path['en']; // Fallback to English if translation not available
+  };
+
+  useEffect(() => {
+    const user = JSON.parse(sessionStorage.getItem('user'));
+    if (user) {
+      setIsLoggedIn(true);
+      setUserRole(user.role);
+    } else {
+      setIsLoggedIn(false);
+      setUserRole('');
+    }
+  }, []);
+
   const handleLogout = async () => {
     try {
       const token = sessionStorage.getItem("token");
-
       const response = await axios.post(
         "http://127.0.0.1:5000/auth/logout",
-        {}, // Empty body (if needed)
+        {},
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -22,13 +81,12 @@ const Navbar = () => {
         }
       );
 
-      console.log(response.data);
-
       if (response.status === 200) {
-        // Axios uses `.status`, not `.ok`
-        sessionStorage.removeItem("token"); // Clear token from storage
+        sessionStorage.removeItem("token");
         sessionStorage.removeItem("user");
-        navigate("/login"); // Redirect to login page
+        setIsLoggedIn(false);
+        setUserRole('');
+        navigate("/login");
       } else {
         console.error("Logout failed");
       }
@@ -37,39 +95,47 @@ const Navbar = () => {
     }
   };
 
-
   return (
-    <div className="navbar-container">
-      <Link to="/">
-        <h1>
-          <i className="fas fa-hands-helping"></i> Urban Food Waste Management
-        </h1>
-      </Link>
-      <nav className="header-buttons">
-        <Link to="/about-us">About Us</Link>
+    <nav className="navbar">
+      <div className="navbar-container">
+        <Link to="/" className="navbar-title">
+          <h1>
+            <i className="fas fa-hands-helping"></i> {getMessage(messages.title)}
+          </h1>
+        </Link>
+        <div className="header-buttons">
+          <Link to="/">{getMessage(messages.home)}</Link>
+          <Link to="/about-us">{getMessage(messages.about)}</Link>
 
-        {sessionStorage.getItem("token") ? (
-          <>
-            {/* Get user role from sessionStorage */}
-            {JSON.parse(sessionStorage.getItem("user"))?.role === "donor" && (
-              <Link to="/make-donation">Make Donation</Link> // Show only for donors
-            )}
-            {JSON.parse(sessionStorage.getItem("user"))?.role === "receiver" && (
-              <Link to="/dashboard">Dashboard</Link> // Show only for donors
-            )}
-            {JSON.parse(sessionStorage.getItem("user"))?.role === "delivery_partner" && (
-              <Link to="/delivery-dashboard">Dashboard</Link> // Show only for donors
-            )}
-
-            <button onClick={handleLogout}>Logout</button>
-          </>
-        ) : (
-          <Link to="/login">Sign In</Link>
-        )}
-      </nav>
-    </div>
+          {!isLoggedIn ? (
+            <>
+              <Link to="/login">{getMessage(messages.login)}</Link>
+              <Link to="/signup">{getMessage(messages.signup)}</Link>
+            </>
+          ) : (
+            <>
+              {userRole === 'donor' && (
+                <Link to="/make-donation">{getMessage(messages.makeDonation)}</Link>
+              )}
+              {userRole === 'receiver' && (
+                <Link to="/dashboard">{getMessage(messages.dashboard)}</Link>
+              )}
+              {userRole === 'delivery_partner' && (
+                <Link to="/delivery-dashboard">{getMessage(messages.dashboard)}</Link>
+              )}
+              <Link to="/profile" className="profile-link">
+                <FaUser /> {getMessage(messages.profile)}
+              </Link>
+              <button onClick={handleLogout} className="logout-button">
+                {getMessage(messages.logout)}
+              </button>
+            </>
+          )}
+          <LanguageSelector />
+        </div>
+      </div>
+    </nav>
   );
-
 };
 
 export default Navbar;
