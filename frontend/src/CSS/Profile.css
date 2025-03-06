@@ -17,23 +17,21 @@
 /* Theme-specific backgrounds */
 .donor-profile {
     background: var(--donor-bg);
-    min-height: 100vh;
 }
 
 .receiver-profile {
     background: var(--receiver-bg);
-    min-height: 100vh;
 }
 
 .delivery-profile {
     background: var(--delivery-bg);
-    min-height: 100vh;
 }
 
 .profile-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem 1rem;
+    min-height: calc(100vh - 64px); /* Adjust for navbar height */
 }
 
 /* Profile Header */

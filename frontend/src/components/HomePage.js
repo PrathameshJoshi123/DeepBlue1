@@ -2,6 +2,7 @@ import React from "react";
 import '../CSS/HomePage.css'
 import { Link } from "react-router-dom";
 import { useLanguage } from '../context/LanguageContext';
+import ImpactDashboard from './ImpactDashboard';
 
 const HomePage = () => {
     const { language } = useLanguage();
@@ -92,6 +93,9 @@ const HomePage = () => {
                     <Link to="/delivery">{getMessage(messages.delivery.cta)}</Link>
                 </div>
             </section>
+
+            {/* Impact Dashboard */}
+            <ImpactDashboard />
         </div>
     );
 };

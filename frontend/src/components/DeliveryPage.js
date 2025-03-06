@@ -18,12 +18,230 @@ import {
   FaCity,
   FaMapSigns,
   FaMailBulk,
-  FaTruck
+  FaTruck,
+  FaCalendarAlt,
+  FaUsers,
+  FaCarrot,
+  FaLeaf,
+  FaBox,
+  FaTruckPickup,
+  FaClock,
+  FaWarehouse,
+  FaCheckCircle,
+  FaHeart
 } from "react-icons/fa";
 import "../CSS/Forms.css";
+import { useLanguage } from '../context/LanguageContext';
 
 const DeliveryPage = () => {
   const navigate = useNavigate();
+  const token = sessionStorage.getItem('token');
+  const { language } = useLanguage();
+
+  const messages = {
+    title: {
+      'en': 'Delivery Partner Registration',
+      'hi': 'डिलीवरी पार्टनर पंजीकरण'
+    },
+    subtitle: {
+      'en': 'Join our network of delivery partners and help connect donors with receivers',
+      'hi': 'हमारे डिलीवरी पार्टनर नेटवर्क से जुड़ें और दाताओं को प्राप्तकर्ताओं से जोड़ने में मदद करें'
+    },
+    sections: {
+      basicInfo: {
+        'en': 'Basic Information',
+        'hi': 'मूल जानकारी'
+      },
+      addressDetails: {
+        'en': 'Address Details',
+        'hi': 'पता विवरण'
+      },
+      vehicleDetails: {
+        'en': 'Vehicle Details',
+        'hi': 'वाहन विवरण'
+      },
+      verification: {
+        'en': 'Verification',
+        'hi': 'सत्यापन'
+      }
+    },
+    fields: {
+      companyName: {
+        label: {
+          'en': 'Company/Individual Name',
+          'hi': 'कंपनी/व्यक्तिगत नाम'
+        },
+        placeholder: {
+          'en': 'Enter company or individual name',
+          'hi': 'कंपनी या व्यक्तिगत नाम दर्ज करें'
+        }
+      },
+      contactPerson: {
+        label: {
+          'en': 'Contact Person Name',
+          'hi': 'संपर्क व्यक्ति का नाम'
+        },
+        placeholder: {
+          'en': 'Enter contact person name',
+          'hi': 'संपर्क व्यक्ति का नाम दर्ज करें'
+        }
+      },
+      email: {
+        label: {
+          'en': 'Email Address',
+          'hi': 'ईमेल पता'
+        },
+        placeholder: {
+          'en': 'Enter email address',
+          'hi': 'ईमेल पता दर्ज करें'
+        }
+      },
+      phone: {
+        label: {
+          'en': 'Contact Number',
+          'hi': 'संपर्क नंबर'
+        },
+        placeholder: {
+          'en': 'Enter contact number',
+          'hi': 'संपर्क नंबर दर्ज करें'
+        }
+      },
+      buildingName: {
+        label: {
+          'en': 'Building Name',
+          'hi': 'इमारत का नाम'
+        },
+        placeholder: {
+          'en': 'Enter building name',
+          'hi': 'इमारत का नाम दर्ज करें'
+        }
+      },
+      streetName: {
+        label: {
+          'en': 'Street Name',
+          'hi': 'सड़क का नाम'
+        },
+        placeholder: {
+          'en': 'Enter street name',
+          'hi': 'सड़क का नाम दर्ज करें'
+        }
+      },
+      city: {
+        label: {
+          'en': 'City',
+          'hi': 'शहर'
+        },
+        placeholder: {
+          'en': 'Enter city',
+          'hi': 'शहर दर्ज करें'
+        }
+      },
+      state: {
+        label: {
+          'en': 'State',
+          'hi': 'राज्य'
+        },
+        placeholder: {
+          'en': 'Enter state',
+          'hi': 'राज्य दर्ज करें'
+        }
+      },
+      zipCode: {
+        label: {
+          'en': 'ZIP Code',
+          'hi': 'पिन कोड'
+        },
+        placeholder: {
+          'en': 'Enter ZIP code',
+          'hi': 'पिन कोड दर्ज करें'
+        }
+      },
+      vehicleType: {
+        label: {
+          'en': 'Vehicle Type',
+          'hi': 'वाहन का प्रकार'
+        },
+        options: {
+          select: {
+            'en': 'Select Vehicle Type',
+            'hi': 'वाहन का प्रकार चुनें'
+          },
+          bike: {
+            'en': 'Bike',
+            'hi': 'बाइक'
+          },
+          car: {
+            'en': 'Car',
+            'hi': 'कार'
+          },
+          van: {
+            'en': 'Van',
+            'hi': 'वैन'
+          },
+          truck: {
+            'en': 'Truck',
+            'hi': 'ट्रक'
+          }
+        }
+      },
+      vehicleNumber: {
+        label: {
+          'en': 'Vehicle Number',
+          'hi': 'वाहन संख्या'
+        },
+        placeholder: {
+          'en': 'Enter vehicle registration number',
+          'hi': 'वाहन पंजीकरण संख्या दर्ज करें'
+        }
+      },
+      licenseNumber: {
+        label: {
+          'en': 'License Number',
+          'hi': 'लाइसेंस नंबर'
+        },
+        placeholder: {
+          'en': 'Enter driving license number',
+          'hi': 'ड्राइविंग लाइसेंस नंबर दर्ज करें'
+        }
+      },
+      idProof: {
+        label: {
+          'en': 'ID Proof',
+          'hi': 'पहचान प्रमाण'
+        },
+        uploadText: {
+          'en': 'Click to upload or drag and drop',
+          'hi': 'अपलोड करने के लिए क्लिक करें या खींचें और छोड़ें'
+        },
+        supportedFormats: {
+          'en': 'Supported formats: JPEG, PNG, PDF',
+          'hi': 'समर्थित प्रारूप: JPEG, PNG, PDF'
+        }
+      }
+    },
+    buttons: {
+      register: {
+        'en': 'Register as Delivery Partner',
+        'hi': 'डिलीवरी पार्टनर के रूप में पंजीकरण करें'
+      }
+    },
+    messages: {
+      success: {
+        'en': 'Registration successful!',
+        'hi': 'पंजीकरण सफल!'
+      },
+      error: {
+        'en': 'Something went wrong.',
+        'hi': 'कुछ गलत हो गया।'
+      }
+    }
+  };
+
+  const getMessage = (path) => {
+    const langCode = language.split('-')[0];
+    return path[langCode] || path['en'];
+  };
+
   const [formData, setFormData] = useState({
     company_name: "",
     person_name: "",
@@ -65,7 +283,6 @@ const DeliveryPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = sessionStorage.getItem("token");
 
     try {
       const formDataToSend = new FormData();
@@ -100,8 +317,8 @@ const DeliveryPage = () => {
   return (
     <div className="form-container delivery-form">
       <div className="form-header">
-        <h2>Delivery Partner Registration</h2>
-        <p>Join our network of delivery partners and help connect donors with receivers</p>
+        <h2>{getMessage(messages.title)}</h2>
+        <p>{getMessage(messages.subtitle)}</p>
       </div>
 
       {errorMessage && <div className="message error-message">{errorMessage}</div>}
@@ -109,55 +326,55 @@ const DeliveryPage = () => {
 
       <form onSubmit={handleSubmit} encType="multipart/form-data">
         <div className="form-section">
-          <h3><FaUser /> Basic Information</h3>
+          <h3><FaUser /> {getMessage(messages.sections.basicInfo)}</h3>
           
           <div className="form-group">
-            <label><FaBuilding /> Company/Individual Name</label>
+            <label><FaBuilding /> {getMessage(messages.fields.companyName.label)}</label>
             <input
               type="text"
               name="company_name"
               className="form-input"
               value={formData.company_name}
-              placeholder="Enter company or individual name"
+              placeholder={getMessage(messages.fields.companyName.placeholder)}
               onChange={handleChange}
               required
             />
           </div>
 
           <div className="form-group">
-            <label><FaUser /> Contact Person Name</label>
+            <label><FaUser /> {getMessage(messages.fields.contactPerson.label)}</label>
             <input
               type="text"
               name="person_name"
               className="form-input"
               value={formData.person_name}
-              placeholder="Enter contact person name"
+              placeholder={getMessage(messages.fields.contactPerson.placeholder)}
               onChange={handleChange}
               required
             />
           </div>
 
           <div className="form-group">
-            <label><FaEnvelope /> Email Address</label>
+            <label><FaEnvelope /> {getMessage(messages.fields.email.label)}</label>
             <input
               type="email"
               name="email"
               className="form-input"
               value={formData.email}
-              placeholder="Enter email address"
+              placeholder={getMessage(messages.fields.email.placeholder)}
               onChange={handleChange}
               required
             />
           </div>
 
           <div className="form-group">
-            <label><FaPhone /> Contact Number</label>
+            <label><FaPhone /> {getMessage(messages.fields.phone.label)}</label>
             <input
               type="tel"
               name="number"
               className="form-input"
               value={formData.number}
-              placeholder="Enter contact number"
+              placeholder={getMessage(messages.fields.phone.placeholder)}
               onChange={handleChange}
               required
             />
@@ -177,42 +394,46 @@ const DeliveryPage = () => {
         </div>
 
         <div className="form-section">
-          <h3><FaTruck /> Vehicle Information</h3>
+          <h3><FaTruck /> {getMessage(messages.sections.vehicleDetails)}</h3>
           
           <div className="form-group">
-            <label><FaIdCard /> Registration Number</label>
+            <label><FaTruck /> {getMessage(messages.fields.vehicleType.label)}</label>
+            <select
+              name="vehicle_type"
+              className="form-input"
+              value={formData.vehicle_type}
+              onChange={handleChange}
+              required
+            >
+              <option value="">{getMessage(messages.fields.vehicleType.options.select)}</option>
+              <option value="bike">{getMessage(messages.fields.vehicleType.options.bike)}</option>
+              <option value="car">{getMessage(messages.fields.vehicleType.options.car)}</option>
+              <option value="van">{getMessage(messages.fields.vehicleType.options.van)}</option>
+              <option value="truck">{getMessage(messages.fields.vehicleType.options.truck)}</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label><FaIdCard /> {getMessage(messages.fields.vehicleNumber.label)}</label>
             <input
               type="text"
               name="registration_number"
               className="form-input"
               value={formData.registration_number}
-              placeholder="Enter vehicle registration number"
+              placeholder={getMessage(messages.fields.vehicleNumber.placeholder)}
               onChange={handleChange}
               required
             />
           </div>
 
           <div className="form-group">
-            <label><FaCar /> Vehicle Types</label>
+            <label><FaIdCard /> {getMessage(messages.fields.licenseNumber.label)}</label>
             <input
               type="text"
-              name="vehicle_types"
+              name="license_number"
               className="form-input"
-              value={formData.vehicle_types}
-              placeholder="Enter types of vehicles (e.g., Van, Truck)"
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label><FaBus /> Fleet Size</label>
-            <input
-              type="number"
-              name="fleet_size"
-              className="form-input"
-              value={formData.fleet_size}
-              placeholder="Enter number of vehicles"
+              value={formData.license_number}
+              placeholder={getMessage(messages.fields.licenseNumber.placeholder)}
               onChange={handleChange}
               required
             />
@@ -220,68 +441,68 @@ const DeliveryPage = () => {
         </div>
 
         <div className="form-section">
-          <h3><FaMapMarkerAlt /> Address Details</h3>
+          <h3><FaMapMarkerAlt /> {getMessage(messages.sections.addressDetails)}</h3>
           
           <div className="form-group">
-            <label><FaHome /> Building Name</label>
+            <label><FaHome /> {getMessage(messages.fields.buildingName.label)}</label>
             <input
               type="text"
               name="building_name"
               className="form-input"
               value={formData.building_name}
-              placeholder="Enter building name"
+              placeholder={getMessage(messages.fields.buildingName.placeholder)}
               onChange={handleChange}
               required
             />
           </div>
 
           <div className="form-group">
-            <label><FaMapSigns /> Street Address</label>
+            <label><FaMapSigns /> {getMessage(messages.fields.streetName.label)}</label>
             <input
               type="text"
               name="street_address"
               className="form-input"
               value={formData.street_address}
-              placeholder="Enter street address"
+              placeholder={getMessage(messages.fields.streetName.placeholder)}
               onChange={handleChange}
               required
             />
           </div>
 
           <div className="form-group">
-            <label><FaCity /> City</label>
+            <label><FaCity /> {getMessage(messages.fields.city.label)}</label>
             <input
               type="text"
               name="city"
               className="form-input"
               value={formData.city}
-              placeholder="Enter city"
+              placeholder={getMessage(messages.fields.city.placeholder)}
               onChange={handleChange}
               required
             />
           </div>
 
           <div className="form-group">
-            <label><FaMapSigns /> State/Region</label>
+            <label><FaMapSigns /> {getMessage(messages.fields.state.label)}</label>
             <input
               type="text"
               name="state"
               className="form-input"
               value={formData.state}
-              placeholder="Enter state or region"
+              placeholder={getMessage(messages.fields.state.placeholder)}
               onChange={handleChange}
               required
             />
           </div>
 
           <div className="form-group">
-            <label><FaMailBulk /> Postal/ZIP Code</label>
+            <label><FaMailBulk /> {getMessage(messages.fields.zipCode.label)}</label>
             <input
               type="text"
               name="postal_code"
               className="form-input"
               value={formData.postal_code}
-              placeholder="Enter postal or ZIP code"
+              placeholder={getMessage(messages.fields.zipCode.placeholder)}
               onChange={handleChange}
               required
             />
@@ -302,20 +523,20 @@ const DeliveryPage = () => {
         </div>
 
         <div className="form-section">
-          <h3><FaFileAlt /> Verification</h3>
+          <h3><FaFileAlt /> {getMessage(messages.sections.verification)}</h3>
           
           <div className="form-group">
-            <label><FaUpload /> ID Proof</label>
+            <label><FaUpload /> {getMessage(messages.fields.idProof.label)}</label>
             <div className="file-upload">
               <div className="file-upload-text">
                 <FaUpload />
-                <span>Click to upload or drag and drop</span>
-                <span>Supported formats: JPG, PNG, PDF</span>
+                <span>{getMessage(messages.fields.idProof.uploadText)}</span>
+                <span>{getMessage(messages.fields.idProof.supportedFormats)}</span>
               </div>
               <input
                 type="file"
                 name="id_proof"
-                accept=".jpg,.png,.pdf"
+                accept="image/png, image/jpeg, application/pdf"
                 onChange={handleFileChange}
                 required
               />
@@ -338,7 +559,7 @@ const DeliveryPage = () => {
         </div>
 
         <button type="submit" className="submit-button">
-          <FaPaperPlane /> Register as Delivery Partner
+          <FaPaperPlane /> {getMessage(messages.buttons.register)}
         </button>
       </form>
     </div>

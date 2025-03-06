@@ -19,6 +19,7 @@ import {
 } from "react-icons/fa";
 import "../CSS/Forms.css";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from '../context/LanguageContext';
 
 const Donor = () => {
   const [formData, setFormData] = useState({
@@ -41,6 +42,225 @@ const Donor = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
+  const { language } = useLanguage();
+
+  const messages = {
+    title: {
+      'en': 'Become a Food Donor',
+      'hi': 'भोजन दाता बनें'
+    },
+    subtitle: {
+      'en': 'Join us in reducing food waste and helping those in need',
+      'hi': 'भोजन की बर्बादी को कम करने और जरूरतमंदों की मदद करने में हमारा साथ दें'
+    },
+    sections: {
+      basicInfo: {
+        'en': 'Basic Information',
+        'hi': 'मूल जानकारी'
+      },
+      addressDetails: {
+        'en': 'Address Details',
+        'hi': 'पता विवरण'
+      },
+      donationDetails: {
+        'en': 'Donation Details',
+        'hi': 'दान विवरण'
+      },
+      verification: {
+        'en': 'Verification',
+        'hi': 'सत्यापन'
+      }
+    },
+    fields: {
+      fullName: {
+        label: {
+          'en': 'Full Name',
+          'hi': 'पूरा नाम'
+        },
+        placeholder: {
+          'en': 'Enter your full name',
+          'hi': 'अपना पूरा नाम दर्ज करें'
+        }
+      },
+      email: {
+        label: {
+          'en': 'Email',
+          'hi': 'ईमेल'
+        },
+        placeholder: {
+          'en': 'Enter your email',
+          'hi': 'अपना ईमेल दर्ज करें'
+        }
+      },
+      restaurantName: {
+        label: {
+          'en': 'Restaurant Name (Optional)',
+          'hi': 'रेस्तरां का नाम (वैकल्पिक)'
+        },
+        placeholder: {
+          'en': 'Enter restaurant name if applicable',
+          'hi': 'यदि लागू हो तो रेस्तरां का नाम दर्ज करें'
+        }
+      },
+      contactNumber: {
+        label: {
+          'en': 'Contact Number',
+          'hi': 'संपर्क नंबर'
+        },
+        placeholder: {
+          'en': 'Enter your contact number',
+          'hi': 'अपना संपर्क नंबर दर्ज करें'
+        }
+      },
+      buildingName: {
+        label: {
+          'en': 'Building Name',
+          'hi': 'इमारत का नाम'
+        },
+        placeholder: {
+          'en': 'Enter building name',
+          'hi': 'इमारत का नाम दर्ज करें'
+        }
+      },
+      streetName: {
+        label: {
+          'en': 'Street Name',
+          'hi': 'सड़क का नाम'
+        },
+        placeholder: {
+          'en': 'Enter street name',
+          'hi': 'सड़क का नाम दर्ज करें'
+        }
+      },
+      shopNumber: {
+        label: {
+          'en': 'Shop Number (Optional)',
+          'hi': 'दुकान नंबर (वैकल्पिक)'
+        },
+        placeholder: {
+          'en': 'Enter shop number if applicable',
+          'hi': 'यदि लागू हो तो दुकान नंबर दर्ज करें'
+        }
+      },
+      city: {
+        label: {
+          'en': 'City',
+          'hi': 'शहर'
+        },
+        placeholder: {
+          'en': 'Enter city',
+          'hi': 'शहर दर्ज करें'
+        }
+      },
+      state: {
+        label: {
+          'en': 'State',
+          'hi': 'राज्य'
+        },
+        placeholder: {
+          'en': 'Enter state',
+          'hi': 'राज्य दर्ज करें'
+        }
+      },
+      zipCode: {
+        label: {
+          'en': 'ZIP Code',
+          'hi': 'पिन कोड'
+        },
+        placeholder: {
+          'en': 'Enter ZIP code',
+          'hi': 'पिन कोड दर्ज करें'
+        }
+      },
+      donationFrequency: {
+        label: {
+          'en': 'Donation Frequency',
+          'hi': 'दान की आवृत्ति'
+        },
+        options: {
+          select: {
+            'en': 'Select Frequency',
+            'hi': 'आवृत्ति चुनें'
+          },
+          oneTime: {
+            'en': 'One-time',
+            'hi': 'एक बार'
+          },
+          daily: {
+            'en': 'Daily',
+            'hi': 'दैनिक'
+          },
+          weekly: {
+            'en': 'Weekly',
+            'hi': 'साप्ताहिक'
+          },
+          biWeekly: {
+            'en': 'Bi-Weekly',
+            'hi': 'द्वि-साप्ताहिक'
+          },
+          monthly: {
+            'en': 'Monthly',
+            'hi': 'मासिक'
+          }
+        }
+      },
+      idProof: {
+        label: {
+          'en': 'ID Proof',
+          'hi': 'पहचान प्रमाण'
+        },
+        uploadText: {
+          'en': 'Click to upload or drag and drop',
+          'hi': 'अपलोड करने के लिए क्लिक करें या खींचें और छोड़ें'
+        },
+        supportedFormats: {
+          'en': 'Supported formats: JPEG, PNG, PDF',
+          'hi': 'समर्थित प्रारूप: JPEG, PNG, PDF'
+        }
+      },
+      fssaiId: {
+        label: {
+          'en': 'FSSAI ID',
+          'hi': 'FSSAI आईडी'
+        },
+        placeholder: {
+          'en': 'Enter FSSAI ID',
+          'hi': 'FSSAI आईडी दर्ज करें'
+        }
+      },
+      termsAgreed: {
+        label: {
+          'en': 'I agree to the',
+          'hi': 'मैं सहमत हूं'
+        },
+        terms: {
+          'en': 'Terms and Conditions',
+          'hi': 'नियम और शर्तें'
+        }
+      }
+    },
+    buttons: {
+      register: {
+        'en': 'Register as Donor',
+        'hi': 'दाता के रूप में पंजीकरण करें'
+      }
+    },
+    messages: {
+      success: {
+        'en': 'Registration successful!',
+        'hi': 'पंजीकरण सफल!'
+      },
+      error: {
+        'en': 'Something went wrong.',
+        'hi': 'कुछ गलत हो गया।'
+      }
+    }
+  };
+
+  const getMessage = (path) => {
+    const langCode = language.split('-')[0];
+    return path[langCode] || path['en'];
+  };
 
   const handleChange = (e) => {
     const { name, type, value, checked, files } = e.target;
@@ -91,8 +311,8 @@ const Donor = () => {
   return (
     <div className="form-container donor-form">
       <div className="form-header">
-        <h2>Become a Food Donor</h2>
-        <p>Join us in reducing food waste and helping those in need</p>
+        <h2>{getMessage(messages.title)}</h2>
+        <p>{getMessage(messages.subtitle)}</p>
       </div>
 
       {errorMessage && <div className="message error-message">{errorMessage}</div>}
@@ -100,54 +320,54 @@ const Donor = () => {
 
       <form onSubmit={handleSubmit} encType="multipart/form-data">
         <div className="form-section">
-          <h3><FaInfoCircle /> Basic Information</h3>
+          <h3><FaInfoCircle /> {getMessage(messages.sections.basicInfo)}</h3>
           
           <div className="form-group">
-            <label><FaUser /> Full Name</label>
+            <label><FaUser /> {getMessage(messages.fields.fullName.label)}</label>
             <input
               type="text"
               name="full_name"
               className="form-input"
               value={formData.full_name}
-              placeholder="Enter your full name"
+              placeholder={getMessage(messages.fields.fullName.placeholder)}
               onChange={handleChange}
               required
             />
           </div>
 
           <div className="form-group">
-            <label><FaEnvelope /> Email</label>
+            <label><FaEnvelope /> {getMessage(messages.fields.email.label)}</label>
             <input
               type="email"
               name="email"
               className="form-input"
               value={formData.email}
-              placeholder="Enter your email"
+              placeholder={getMessage(messages.fields.email.placeholder)}
               onChange={handleChange}
               required
             />
           </div>
 
           <div className="form-group">
-            <label><FaBuilding /> Restaurant Name (Optional)</label>
+            <label><FaBuilding /> {getMessage(messages.fields.restaurantName.label)}</label>
             <input
               type="text"
               name="restaurant_name"
               className="form-input"
               value={formData.restaurant_name}
-              placeholder="Enter restaurant name if applicable"
+              placeholder={getMessage(messages.fields.restaurantName.placeholder)}
               onChange={handleChange}
             />
           </div>
 
           <div className="form-group">
-            <label><FaPhone /> Contact Number</label>
+            <label><FaPhone /> {getMessage(messages.fields.contactNumber.label)}</label>
             <input
               type="tel"
               name="contact_number"
               className="form-input"
               value={formData.contact_number}
-              placeholder="Enter your contact number"
+              placeholder={getMessage(messages.fields.contactNumber.placeholder)}
               onChange={handleChange}
               required
             />
@@ -155,80 +375,80 @@ const Donor = () => {
         </div>
 
         <div className="form-section">
-          <h3><FaMapMarkerAlt /> Address Details</h3>
+          <h3><FaMapMarkerAlt /> {getMessage(messages.sections.addressDetails)}</h3>
           
           <div className="form-group">
-            <label><FaBuilding /> Building Name</label>
+            <label><FaBuilding /> {getMessage(messages.fields.buildingName.label)}</label>
             <input
               type="text"
               name="building_name"
               className="form-input"
               value={formData.building_name}
-              placeholder="Enter building name"
+              placeholder={getMessage(messages.fields.buildingName.placeholder)}
               onChange={handleChange}
               required
             />
           </div>
 
           <div className="form-group">
-            <label><FaMapSigns /> Street Name</label>
+            <label><FaMapSigns /> {getMessage(messages.fields.streetName.label)}</label>
             <input
               type="text"
               name="street_name"
               className="form-input"
               value={formData.street_name}
-              placeholder="Enter street name"
+              placeholder={getMessage(messages.fields.streetName.placeholder)}
               onChange={handleChange}
               required
             />
           </div>
 
           <div className="form-group">
-            <label><FaBuilding /> Shop Number (Optional)</label>
+            <label><FaBuilding /> {getMessage(messages.fields.shopNumber.label)}</label>
             <input
               type="text"
               name="shop_number"
               className="form-input"
               value={formData.shop_number}
-              placeholder="Enter shop number if applicable"
+              placeholder={getMessage(messages.fields.shopNumber.placeholder)}
               onChange={handleChange}
             />
           </div>
 
           <div className="form-group">
-            <label><FaCity /> City</label>
+            <label><FaCity /> {getMessage(messages.fields.city.label)}</label>
             <input
               type="text"
               name="city"
               className="form-input"
               value={formData.city}
-              placeholder="Enter city"
+              placeholder={getMessage(messages.fields.city.placeholder)}
               onChange={handleChange}
               required
             />
           </div>
 
           <div className="form-group">
-            <label><FaMapSigns /> State</label>
+            <label><FaMapSigns /> {getMessage(messages.fields.state.label)}</label>
             <input
               type="text"
               name="state"
               className="form-input"
               value={formData.state}
-              placeholder="Enter state"
+              placeholder={getMessage(messages.fields.state.placeholder)}
               onChange={handleChange}
               required
             />
           </div>
 
           <div className="form-group">
-            <label><FaMailBulk /> ZIP Code</label>
+            <label><FaMailBulk /> {getMessage(messages.fields.zipCode.label)}</label>
             <input
               type="text"
               name="zip_code"
               className="form-input"
               value={formData.zip_code}
-              placeholder="Enter ZIP code"
+              placeholder={getMessage(messages.fields.zipCode.placeholder)}
               onChange={handleChange}
               required
             />
@@ -236,10 +456,10 @@ const Donor = () => {
         </div>
 
         <div className="form-section">
-          <h3><FaCalendarAlt /> Donation Details</h3>
+          <h3><FaCalendarAlt /> {getMessage(messages.sections.donationDetails)}</h3>
           
           <div className="form-group">
-            <label><FaCalendarAlt /> Donation Frequency</label>
+            <label><FaCalendarAlt /> {getMessage(messages.fields.donationFrequency.label)}</label>
             <select
               name="donation_frequency"
               className="form-input"
@@ -247,26 +467,26 @@ const Donor = () => {
               onChange={handleChange}
               required
             >
-              <option value="">Select Frequency</option>
-              <option value="One-time">One-time</option>
-              <option value="Daily">Daily</option>
-              <option value="Weekly">Weekly</option>
-              <option value="Bi-Weekly">Bi-Weekly</option>
-              <option value="Monthly">Monthly</option>
+              <option value="">{getMessage(messages.fields.donationFrequency.options.select)}</option>
+              <option value="One-time">{getMessage(messages.fields.donationFrequency.options.oneTime)}</option>
+              <option value="Daily">{getMessage(messages.fields.donationFrequency.options.daily)}</option>
+              <option value="Weekly">{getMessage(messages.fields.donationFrequency.options.weekly)}</option>
+              <option value="Bi-Weekly">{getMessage(messages.fields.donationFrequency.options.biWeekly)}</option>
+              <option value="Monthly">{getMessage(messages.fields.donationFrequency.options.monthly)}</option>
             </select>
           </div>
         </div>
 
         <div className="form-section">
-          <h3><FaIdCard /> Verification</h3>
+          <h3><FaIdCard /> {getMessage(messages.sections.verification)}</h3>
           
           <div className="form-group">
-            <label><FaUpload /> ID Proof</label>
+            <label><FaUpload /> {getMessage(messages.fields.idProof.label)}</label>
             <div className="file-upload">
               <div className="file-upload-text">
                 <FaUpload />
-                <span>Click to upload or drag and drop</span>
-                <span>Supported formats: JPEG, PNG, PDF</span>
+                <span>{getMessage(messages.fields.idProof.uploadText)}</span>
+                <span>{getMessage(messages.fields.idProof.supportedFormats)}</span>
               </div>
               <input
                 type="file"
@@ -279,13 +499,13 @@ const Donor = () => {
           </div>
 
           <div className="form-group">
-            <label><FaCertificate /> FSSAI ID</label>
+            <label><FaCertificate /> {getMessage(messages.fields.fssaiId.label)}</label>
             <input
               type="text"
               name="fssai_id"
               className="form-input"
               value={formData.fssai_id}
-              placeholder="Enter FSSAI ID"
+              placeholder={getMessage(messages.fields.fssaiId.placeholder)}
               onChange={handleChange}
               required
             />
@@ -301,13 +521,13 @@ const Donor = () => {
               required
             />
             <label htmlFor="terms_agreed">
-              I agree to the <a href="#">Terms and Conditions</a>
+              {getMessage(messages.fields.termsAgreed.label)} <a href="#">{getMessage(messages.fields.termsAgreed.terms)}</a>
             </label>
           </div>
         </div>
 
         <button type="submit" className="submit-button">
-          <FaPaperPlane /> Register as Donor
+          <FaPaperPlane /> {getMessage(messages.buttons.register)}
         </button>
       </form>
     </div>

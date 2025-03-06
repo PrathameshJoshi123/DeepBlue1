@@ -181,46 +181,48 @@ const Profile = () => {
                 </div>
             </div>
 
-            <div className="transactions-section">
-                <h2 className="section-title">{getMessage(messages.sections.transactionHistory)}</h2>
-                <div className="transaction-list">
-                    {transactions.map(transaction => (
-                        <div key={transaction.id} className="transaction-item">
-                            <div className="transaction-icon" style={getStatusColor(transaction.status)}>
-                                {transaction.icon}
-                            </div>
-                            <div className="transaction-info">
-                                <div className="transaction-title">{transaction.title}</div>
-                                <div className="transaction-date">{transaction.date}</div>
-                            </div>
-                            <div className="transaction-status" style={getStatusColor(transaction.status)}>
-                                {transaction.status}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            <div className="reviews-section">
-                <h2 className="section-title">{getMessage(messages.sections.reviewsRatings)}</h2>
-                <div className="review-list">
-                    {reviews.map(review => (
-                        <div key={review.id} className="review-item">
-                            <div className="review-header">
-                                <img
-                                    src={review.avatar}
-                                    alt={review.name}
-                                    className="reviewer-avatar"
-                                />
-                                <span className="reviewer-name">{review.name}</span>
-                                <div className="review-rating">
-                                    {renderStars(review.rating)}
+            <div className="profile-grid">
+                <div className="transactions-section">
+                    <h2 className="section-title">{getMessage(messages.sections.transactionHistory)}</h2>
+                    <div className="transaction-list">
+                        {transactions.map(transaction => (
+                            <div key={transaction.id} className="transaction-item">
+                                <div className="transaction-icon" style={getStatusColor(transaction.status)}>
+                                    {transaction.icon}
+                                </div>
+                                <div className="transaction-info">
+                                    <div className="transaction-title">{transaction.title}</div>
+                                    <div className="transaction-date">{transaction.date}</div>
+                                </div>
+                                <div className="transaction-status" style={getStatusColor(transaction.status)}>
+                                    {transaction.status}
                                 </div>
                             </div>
-                            <p className="review-content">{review.content}</p>
-                            <div className="review-date">{review.date}</div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
+                </div>
+
+                <div className="reviews-section">
+                    <h2 className="section-title">{getMessage(messages.sections.reviewsRatings)}</h2>
+                    <div className="review-list">
+                        {reviews.map(review => (
+                            <div key={review.id} className="review-item">
+                                <div className="review-header">
+                                    <img
+                                        src={review.avatar}
+                                        alt={review.name}
+                                        className="reviewer-avatar"
+                                    />
+                                    <span className="reviewer-name">{review.name}</span>
+                                    <div className="review-rating">
+                                        {renderStars(review.rating)}
+                                    </div>
+                                </div>
+                                <p className="review-content">{review.content}</p>
+                                <div className="review-date">{review.date}</div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>

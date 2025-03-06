@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import "../CSS/Navbar.css";
 import axios from 'axios';
-import { FaUser } from 'react-icons/fa';
+import { FaUser, FaHome, FaInfoCircle, FaSignInAlt, FaUserPlus, FaLanguage, FaEllipsisH } from "react-icons/fa";
 import { useLanguage } from '../context/LanguageContext';
 import LanguageSelector from './LanguageSelector';
 
@@ -48,6 +48,32 @@ const Navbar = () => {
     title: {
       'en': 'Urban Food Waste Management',
       'hi': 'शहरी खाद्य अपशिष्ट प्रबंधन'
+    },
+    more: {
+      'en': 'More',
+      'hi': 'अधिक'
+    },
+    tabs: {
+      csr: {
+        'en': 'CSR',
+        'hi': 'CSR'
+      },
+      volunteer: {
+        'en': 'Volunteer',
+        'hi': 'वॉलंटयर'
+      },
+      donate: {
+        'en': 'Donate',
+        'hi': 'दान'
+      },
+      calculator: {
+        'en': 'Calculator',
+        'hi': 'कैलकुलेटर'
+      },
+      community: {
+        'en': 'Community',
+        'hi': 'समुदाय'
+      }
     }
   };
 
@@ -106,7 +132,16 @@ const Navbar = () => {
         <div className="header-buttons">
           <Link to="/">{getMessage(messages.home)}</Link>
           <Link to="/about-us">{getMessage(messages.about)}</Link>
-
+          <div className="dropdown">
+            <button className="dropbtn">{getMessage(messages.more)} <FaEllipsisH /></button>
+            <div className="dropdown-content">
+              <Link to="/more#csr">{getMessage(messages.tabs.csr)}</Link>
+              <Link to="/more#volunteer">{getMessage(messages.tabs.volunteer)}</Link>
+              <Link to="/more#donate">{getMessage(messages.tabs.donate)}</Link>
+              <Link to="/more#calculator">{getMessage(messages.tabs.calculator)}</Link>
+              <Link to="/more#community">{getMessage(messages.tabs.community)}</Link>
+            </div>
+          </div>
           {!isLoggedIn ? (
             <>
               <Link to="/login">{getMessage(messages.login)}</Link>

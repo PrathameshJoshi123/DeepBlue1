@@ -14,6 +14,8 @@ import DonationForm from "./components/DonationForm";
 import Dashboard from "./components/Dashboard";
 import DeliveryDashboard from "./components/DeliveryDashboard";
 import Profile from "./components/Profile";
+import ChatbotWidget from "./components/ChatbotWidget";
+import MorePage from "./components/MorePage";
 import "./App.css";
 
 function App() {
@@ -67,9 +69,11 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/delivery-dashboard" element={<DeliveryDashboard />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/more" element={<MorePage />} />
             </Routes>
           </div>
           <Footer />
+          <ChatbotWidget />
         </Router>
       </div>
     </LanguageProvider>
