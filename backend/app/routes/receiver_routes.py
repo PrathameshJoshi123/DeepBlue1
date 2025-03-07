@@ -111,3 +111,42 @@ def delete_receiver(receiver_id):
     if result.deleted_count:
         return jsonify({"message": "Receiver deleted successfully"}), 200
     return jsonify({"error": "Receiver not found"}), 404
+
+# Search receivers by name
+@receiver_bp.route("/search", methods=["GET"])
+def search_receivers():
+    try:
+        name_query = request.args.get("name", "")
+        if not name_query or len(name_query) < 2:
+            return jsonify({"error": "Search query too short"}), 400
+            
+        # Search by contact_person or ngo_name
+        query = {
+            "$or": [
+                {"contact_person": {"$regex": name_query, "$options": "i"}},
+                {"ngo_name": {"$regex": name_query, "$options": "i"}}
+            ]
+        }
+        
+        # Find matching receivers
+        receivers = list(db.receivers.find(query, {
+            "contact_person": 1, 
+            "ngo_name": 1,
+            "user_id": 1
+        }).limit(10))
+        
+        # Format results
+        results = []
+        for receiver in receivers:
+            results.append({
+                "_id": str(receiver["_id"]),
+                "contact_person": receiver.get("contact_person", ""),
+                "ngo_name": receiver.get("ngo_name", ""),
+                "user_id": receiver.get("user_id", "")
+            })
+            
+        return jsonify({"results": results}), 200
+        
+    except Exception as e:
+        print(f"Error searching receivers: {e}")
+        return jsonify({"error": str(e)}), 500

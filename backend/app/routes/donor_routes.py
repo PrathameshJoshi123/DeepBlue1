@@ -105,3 +105,42 @@ def delete_donor(donor_id):
     if result.deleted_count:
         return jsonify({"message": "Donor deleted successfully"}), 200
     return jsonify({"error": "Donor not found"}), 404
+
+# Search donors by name
+@donor_bp.route("/search", methods=["GET"])
+def search_donors():
+    try:
+        name_query = request.args.get("name", "")
+        if not name_query or len(name_query) < 2:
+            return jsonify({"error": "Search query too short"}), 400
+            
+        # Search by full_name or organization_name
+        query = {
+            "$or": [
+                {"full_name": {"$regex": name_query, "$options": "i"}},
+                {"organization_name": {"$regex": name_query, "$options": "i"}}
+            ]
+        }
+        
+        # Find matching donors
+        donors = list(db.donors.find(query, {
+            "full_name": 1, 
+            "organization_name": 1,
+            "user_id": 1
+        }).limit(10))
+        
+        # Format results
+        results = []
+        for donor in donors:
+            results.append({
+                "_id": str(donor["_id"]),
+                "full_name": donor.get("full_name", ""),
+                "organization_name": donor.get("organization_name", ""),
+                "user_id": donor.get("user_id", "")
+            })
+            
+        return jsonify({"results": results}), 200
+        
+    except Exception as e:
+        print(f"Error searching donors: {e}")
+        return jsonify({"error": str(e)}), 500

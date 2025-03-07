@@ -27,6 +27,8 @@ import {
   FaFilter
 } from 'react-icons/fa';
 import '../CSS/MorePage.css';
+import CommunityForum from './CommunityForum';
+import axios from 'axios';
 
 const MorePage = () => {
   const { language } = useLanguage();
@@ -39,9 +41,10 @@ const MorePage = () => {
     message: '',
     availability: '',
     skills: '',
-    donationAmount: '',
-    donationType: 'one-time'
+    amount: '',
+    donationType: 'oneTime'
   });
+  const [formSubmitted, setFormSubmitted] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
   
   // Calculator states
@@ -60,146 +63,6 @@ const MorePage = () => {
     monthlyFoodWaste: 500 // kg per month
   });
   const [calculationResults, setCalculationResults] = useState(null);
-  
-  // Community Forum states
-  const [forumCategory, setForumCategory] = useState('success');
-  const [newPost, setNewPost] = useState({
-    title: '',
-    content: '',
-    category: 'success'
-  });
-  const [showNewPostForm, setShowNewPostForm] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-
-  // Mock forum data
-  const mockForumData = {
-    success: [
-      {
-        id: 1,
-        title: 'Reduced food waste by 50% in our restaurant',
-        author: 'Raj Sharma',
-        date: '2023-10-15',
-        content: 'We implemented a new inventory management system and started donating excess food through DeepBlue. This has helped us reduce our food waste by 50% in just three months!',
-        likes: 24,
-        comments: [
-          {
-            author: 'Priya Patel',
-            content: 'That\'s amazing! What inventory system are you using?',
-            date: '2023-10-16'
-          },
-          {
-            author: 'Amit Kumar',
-            content: 'Congratulations! We\'re trying to achieve similar results.',
-            date: '2023-10-17'
-          }
-        ]
-      },
-      {
-        id: 2,
-        title: 'Our school reduced lunch waste by 40%',
-        author: 'Meera Desai',
-        date: '2023-09-28',
-        content: 'By implementing portion control and a food sharing table, our school has managed to reduce lunch waste by 40%. Students can now place unopened items on the sharing table for others to take.',
-        likes: 18,
-        comments: [
-          {
-            author: 'Sanjay Gupta',
-            content: 'This is a great initiative! How did you get the students on board?',
-            date: '2023-09-29'
-          }
-        ]
-      }
-    ],
-    initiatives: [
-      {
-        id: 3,
-        title: 'Food Waste Reduction Challenge',
-        author: 'Green Earth NGO',
-        date: '2023-10-10',
-        content: 'We\'re launching a 30-day food waste reduction challenge for restaurants and hotels in Mumbai. Participants will track their waste and implement reduction strategies. The establishment with the highest percentage reduction will win a sustainability award and media coverage.',
-        likes: 32,
-        comments: [
-          {
-            author: 'Hotel Sunshine',
-            content: 'We\'d love to participate! How can we register?',
-            date: '2023-10-11'
-          }
-        ]
-      },
-      {
-        id: 4,
-        title: 'Community Composting Project',
-        author: 'Urban Farmers Collective',
-        date: '2023-09-20',
-        content: 'We\'ve started a community composting project in Pune where residents can drop off food scraps at designated collection points. The compost is then used in community gardens. We\'ve diverted over 500kg of food waste from landfills in just one month!',
-        likes: 27,
-        comments: []
-      }
-    ],
-    tips: [
-      {
-        id: 5,
-        title: 'Meal planning to reduce household waste',
-        author: 'Nutritionist Neha',
-        date: '2023-10-05',
-        content: 'Plan your meals for the week before shopping. Make a detailed shopping list and stick to it. Store fruits and vegetables properly to extend their life. Use leftovers creatively in new dishes. These simple steps can reduce your household food waste by up to 25%.',
-        likes: 45,
-        comments: [
-          {
-            author: 'Homemaker Sunita',
-            content: 'I\'ve been meal planning for a month now and our food waste has gone down dramatically!',
-            date: '2023-10-06'
-          },
-          {
-            author: 'Bachelor Rohit',
-            content: 'Any tips specifically for single-person households?',
-            date: '2023-10-07'
-          }
-        ]
-      },
-      {
-        id: 6,
-        title: 'Best practices for restaurant inventory management',
-        author: 'Chef Vikram',
-        date: '2023-09-15',
-        content: 'Implement a first-in, first-out (FIFO) system for your inventory. Use digital tools to track stock levels and expiration dates. Train staff on proper storage techniques. Repurpose ingredients creatively across your menu. Review ordering patterns regularly to avoid overstocking.',
-        likes: 38,
-        comments: []
-      }
-    ],
-    qa: [
-      {
-        id: 7,
-        title: 'What types of food can be safely donated?',
-        author: 'Curious Donor',
-        date: '2023-10-12',
-        content: 'I\'m interested in donating food but I\'m not sure what types of food are safe to donate. Can someone provide guidelines?',
-        likes: 15,
-        comments: [
-          {
-            author: 'Food Safety Expert',
-            content: 'Non-perishable items like canned goods, dry pasta, and rice are always safe to donate. Fresh produce, dairy, and prepared meals can also be donated if they\'ve been properly stored and are within their use-by dates. Avoid items that show signs of spoilage or damage.',
-            date: '2023-10-13'
-          }
-        ]
-      },
-      {
-        id: 8,
-        title: 'Legal protections for food donors',
-        author: 'Restaurant Owner',
-        date: '2023-09-25',
-        content: 'Are there any legal protections for businesses that donate food? I\'m concerned about liability if someone gets sick.',
-        likes: 22,
-        comments: [
-          {
-            author: 'Legal Advisor',
-            content: 'In India, the Food Safety and Standards Act provides protection to donors who donate food in good faith. As long as the food meets safety standards at the time of donation, donors are generally protected from liability.',
-            date: '2023-09-26'
-          }
-        ]
-      }
-    ]
-  };
 
   const messages = {
     title: {
@@ -696,7 +559,12 @@ const MorePage = () => {
 
   const getMessage = (path) => {
     const langCode = language.split('-')[0];
-    return path[langCode] || path['en'];
+    if (!path) {
+      console.log('Path is undefined in getMessage');
+      return '';
+    }
+    console.log('Path in getMessage:', path);
+    return path[langCode] || path['en'] || '';
   };
 
   const handleChange = (e) => {
@@ -783,21 +651,22 @@ const MorePage = () => {
 
   const handleSubmit = (e, formType) => {
     e.preventDefault();
-    // Here you would typically send the data to your backend
+    
+    // Here you would typically send the form data to your backend
     console.log(`${formType} form submitted:`, formData);
     
     // Show success message
-    setSuccessMessage(getMessage(messages.success));
+    setFormSubmitted(formType);
     
-    // Reset form after submission
+    // Reset form after a delay
     setTimeout(() => {
-      setSuccessMessage('');
+      setFormSubmitted(null);
       setFormData({
         ...formData,
         message: '',
         availability: '',
         skills: '',
-        donationAmount: ''
+        amount: ''
       });
     }, 3000);
   };
@@ -1064,110 +933,444 @@ const MorePage = () => {
     }
   };
 
-  const handleForumCategoryChange = (category) => {
-    setForumCategory(category);
-  };
-
-  const handleNewPostChange = (e) => {
-    const { name, value } = e.target;
-    setNewPost(prevData => ({
-      ...prevData,
-      [name]: value
-    }));
-  };
-
-  const handleNewPostSubmit = (e) => {
-    e.preventDefault();
-    // Here you would typically send the data to your backend
-    console.log('New forum post submitted:', newPost);
+  // Render CSR content
+  const renderCSRContent = () => {
+    // Check if messages.csr exists
+    if (!messages || !messages.csr) {
+      console.error('messages.csr is undefined');
+      return <div>Loading CSR content...</div>;
+    }
     
-    // Show success message
-    setSuccessMessage(getMessage(messages.success));
-    
-    // Reset form and hide it
-    setTimeout(() => {
-      setSuccessMessage('');
-      setNewPost({
-        title: '',
-        content: '',
-        category: forumCategory
-      });
-      setShowNewPostForm(false);
-    }, 3000);
+    return (
+      <div className="csr-content">
+        <h2>{messages.csr.title ? getMessage(messages.csr.title) : 'Corporate Social Responsibility Benefits'}</h2>
+        <p className="section-intro">{messages.csr.subtitle ? getMessage(messages.csr.subtitle) : 'Partner with us to make a meaningful impact'}</p>
+        
+        <div className="benefits-grid">
+          <div className="benefit-card">
+            <div className="benefit-icon"><FaHandsHelping /></div>
+            <h3>{messages.csr.benefits && messages.csr.benefits.taxBenefits && messages.csr.benefits.taxBenefits.title ? 
+              getMessage(messages.csr.benefits.taxBenefits.title) : 'Tax Benefits'}</h3>
+            <p>{messages.csr.benefits && messages.csr.benefits.taxBenefits && messages.csr.benefits.taxBenefits.description ? 
+              getMessage(messages.csr.benefits.taxBenefits.description) : 'Companies can avail tax benefits for donations made to our platform.'}</p>
+          </div>
+          
+          <div className="benefit-card">
+            <div className="benefit-icon"><FaLeaf /></div>
+            <h3>{messages.csr.benefits && messages.csr.benefits.brandImage && messages.csr.benefits.brandImage.title ? 
+              getMessage(messages.csr.benefits.brandImage.title) : 'Enhanced Brand Image'}</h3>
+            <p>{messages.csr.benefits && messages.csr.benefits.brandImage && messages.csr.benefits.brandImage.description ? 
+              getMessage(messages.csr.benefits.brandImage.description) : 'Improve your company\'s reputation by associating with a social cause.'}</p>
+          </div>
+          
+          <div className="benefit-card">
+            <div className="benefit-icon"><FaMoneyBillWave /></div>
+            <h3>{messages.csr.benefits && messages.csr.benefits.employeeEngagement && messages.csr.benefits.employeeEngagement.title ? 
+              getMessage(messages.csr.benefits.employeeEngagement.title) : 'Employee Engagement'}</h3>
+            <p>{messages.csr.benefits && messages.csr.benefits.employeeEngagement && messages.csr.benefits.employeeEngagement.description ? 
+              getMessage(messages.csr.benefits.employeeEngagement.description) : 'Boost employee morale by involving them in meaningful volunteer activities.'}</p>
+        </div>
+          
+          <div className="benefit-card">
+            <div className="benefit-icon"><FaBuilding /></div>
+            <h3>{messages.csr.benefits && messages.csr.benefits.sdgAlignment && messages.csr.benefits.sdgAlignment.title ? 
+              getMessage(messages.csr.benefits.sdgAlignment.title) : 'SDG Alignment'}</h3>
+            <p>{messages.csr.benefits && messages.csr.benefits.sdgAlignment && messages.csr.benefits.sdgAlignment.description ? 
+              getMessage(messages.csr.benefits.sdgAlignment.description) : 'Align your CSR initiatives with UN Sustainable Development Goals.'}</p>
+        </div>
+        </div>
+        
+        <div className="csr-contact">
+          <h3>{messages.csr.contactUs && messages.csr.contactUs.title ? 
+            getMessage(messages.csr.contactUs.title) : 'Contact Us for CSR Partnerships'}</h3>
+          <p>{messages.csr.subtitle ? getMessage(messages.csr.subtitle) : 'Partner with us to make a meaningful impact'}</p>
+          <a href="mailto:csr@deepblue.org" className="contact-button">
+            <FaEnvelope /> Contact Us
+          </a>
+                </div>
+                </div>
+    );
   };
+  
+  // Render Volunteer content
+  const renderVolunteerContent = () => {
+    // Check if messages.volunteer exists
+    if (!messages || !messages.volunteer) {
+      console.error('messages.volunteer is undefined');
+      return <div>Loading Volunteer content...</div>;
+    }
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
+  return (
+      <div className="volunteer-content">
+        <h2>{messages.volunteer.title ? getMessage(messages.volunteer.title) : 'Volunteer Opportunities'}</h2>
+        <p className="section-intro">{messages.volunteer.subtitle ? getMessage(messages.volunteer.subtitle) : 'Join our mission to reduce food waste and hunger'}</p>
+        
+        <div className="opportunities-list">
+          <div className="opportunity-card">
+            <div className="opportunity-icon"><FaHandsHelping /></div>
+            <h3>{messages.volunteer.opportunities && messages.volunteer.opportunities.foodCollection && messages.volunteer.opportunities.foodCollection.title ? 
+              getMessage(messages.volunteer.opportunities.foodCollection.title) : 'Food Collection'}</h3>
+            <p>{messages.volunteer.opportunities && messages.volunteer.opportunities.foodCollection && messages.volunteer.opportunities.foodCollection.description ? 
+              getMessage(messages.volunteer.opportunities.foodCollection.description) : 'Help collect excess food from restaurants, events, and grocery stores.'}</p>
+      </div>
+
+          <div className="opportunity-card">
+            <div className="opportunity-icon"><FaUsers /></div>
+            <h3>{messages.volunteer.opportunities && messages.volunteer.opportunities.eventManagement && messages.volunteer.opportunities.eventManagement.title ? 
+              getMessage(messages.volunteer.opportunities.eventManagement.title) : 'Event Management'}</h3>
+            <p>{messages.volunteer.opportunities && messages.volunteer.opportunities.eventManagement && messages.volunteer.opportunities.eventManagement.description ? 
+              getMessage(messages.volunteer.opportunities.eventManagement.description) : 'Organize and manage food donation drives and awareness events.'}</p>
+        </div>
+          
+          <div className="opportunity-card">
+            <div className="opportunity-icon"><FaLightbulb /></div>
+            <h3>{messages.volunteer.opportunities && messages.volunteer.opportunities.awarenessPrograms && messages.volunteer.opportunities.awarenessPrograms.title ? 
+              getMessage(messages.volunteer.opportunities.awarenessPrograms.title) : 'Awareness Programs'}</h3>
+            <p>{messages.volunteer.opportunities && messages.volunteer.opportunities.awarenessPrograms && messages.volunteer.opportunities.awarenessPrograms.description ? 
+              getMessage(messages.volunteer.opportunities.awarenessPrograms.description) : 'Conduct workshops and sessions on food waste reduction and management.'}</p>
+          </div>
+          
+          <div className="opportunity-card">
+            <div className="opportunity-icon"><FaCalculator /></div>
+            <h3>{messages.volunteer.opportunities && messages.volunteer.opportunities.techSupport && messages.volunteer.opportunities.techSupport.title ? 
+              getMessage(messages.volunteer.opportunities.techSupport.title) : 'Technical Support'}</h3>
+            <p>{messages.volunteer.opportunities && messages.volunteer.opportunities.techSupport && messages.volunteer.opportunities.techSupport.description ? 
+              getMessage(messages.volunteer.opportunities.techSupport.description) : 'Help with website maintenance, app development, and technical troubleshooting.'}</p>
+              </div>
+          </div>
+          
+          <div className="volunteer-form">
+          <h3>{messages.volunteer.form && messages.volunteer.form.title ? 
+            getMessage(messages.volunteer.form.title) : 'Register as a Volunteer'}</h3>
+          
+            <form onSubmit={(e) => handleSubmit(e, 'volunteer')}>
+              <div className="form-group">
+              <label htmlFor="name">{messages.volunteer.form && messages.volunteer.form.name ? 
+                getMessage(messages.volunteer.form.name) : 'Full Name'}</label>
+                <input
+                  type="text"
+                id="name" 
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            
+              <div className="form-group">
+              <label htmlFor="email">{messages.volunteer.form && messages.volunteer.form.email ? 
+                getMessage(messages.volunteer.form.email) : 'Email'}</label>
+                <input
+                  type="email"
+                id="email" 
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            
+              <div className="form-group">
+              <label htmlFor="phone">{messages.volunteer.form && messages.volunteer.form.phone ? 
+                getMessage(messages.volunteer.form.phone) : 'Phone'}</label>
+                <input
+                  type="tel"
+                id="phone" 
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            
+              <div className="form-group">
+              <label htmlFor="availability">{messages.volunteer.form && messages.volunteer.form.availability ? 
+                getMessage(messages.volunteer.form.availability) : 'Availability'}</label>
+              <select 
+                id="availability" 
+                  name="availability"
+                  value={formData.availability}
+                  onChange={handleChange}
+                  required
+              >
+                <option value="">{messages.volunteer.form && messages.volunteer.form.selectAvailability ? 
+                  getMessage(messages.volunteer.form.selectAvailability) : 'Select your availability'}</option>
+                <option value="weekdays">{messages.volunteer.form && messages.volunteer.form.weekdays ? 
+                  getMessage(messages.volunteer.form.weekdays) : 'Weekdays'}</option>
+                <option value="weekends">{messages.volunteer.form && messages.volunteer.form.weekends ? 
+                  getMessage(messages.volunteer.form.weekends) : 'Weekends'}</option>
+                <option value="both">{messages.volunteer.form && messages.volunteer.form.both ? 
+                  getMessage(messages.volunteer.form.both) : 'Both'}</option>
+              </select>
+              </div>
+            
+              <div className="form-group">
+              <label htmlFor="skills">{messages.volunteer.form && messages.volunteer.form.skills ? 
+                getMessage(messages.volunteer.form.skills) : 'Skills'}</label>
+                <textarea
+                id="skills" 
+                  name="skills"
+                  value={formData.skills}
+                  onChange={handleChange}
+                placeholder={messages.volunteer.form && messages.volunteer.form.skillsPlaceholder ? 
+                  getMessage(messages.volunteer.form.skillsPlaceholder) : 'Tell us about your skills and how you can contribute'}
+                ></textarea>
+              </div>
+            
+              <button type="submit" className="submit-button">
+              {messages.volunteer.form && messages.volunteer.form.submit ? 
+                getMessage(messages.volunteer.form.submit) : 'Submit Application'}
+              </button>
+            </form>
+          
+          {formSubmitted === 'volunteer' && (
+            <div className="success-message">
+              {messages.volunteer.form && messages.volunteer.form.success ? 
+                getMessage(messages.volunteer.form.success) : 'Thank you for your interest in volunteering! We will contact you soon.'}
+        </div>
+      )}
+        </div>
+      </div>
+    );
   };
-
-  const getFilteredPosts = () => {
-    const posts = mockForumData[forumCategory] || [];
+  
+  // Render Donate content
+  const renderDonateContent = () => {
+    // Check if messages.donate exists
+    if (!messages || !messages.donate) {
+      console.error('messages.donate is undefined');
+      return <div>Loading Donate content...</div>;
+    }
     
-    if (!searchQuery) return posts;
+    return (
+      <div className="donate-content">
+        <h2>{messages.donate.title ? getMessage(messages.donate.title) : 'Support Our Mission'}</h2>
+        <p className="section-intro">{messages.donate.subtitle ? getMessage(messages.donate.subtitle) : 'Your contribution helps us reduce food waste and hunger'}</p>
+        
+        <div className="donation-options">
+          <div className="donation-option">
+            <div className="option-icon"><FaDonate /></div>
+            <h3>{messages.donate.options && messages.donate.options.oneTime && messages.donate.options.oneTime.title ? 
+              getMessage(messages.donate.options.oneTime.title) : 'One-time Donation'}</h3>
+            <p>{messages.donate.options && messages.donate.options.oneTime && messages.donate.options.oneTime.description ? 
+              getMessage(messages.donate.options.oneTime.description) : 'Make a one-time donation to support our food rescue operations.'}</p>
+              </div>
+          
+          <div className="donation-option">
+            <div className="option-icon"><FaHandsHelping /></div>
+            <h3>{messages.donate.options && messages.donate.options.monthly && messages.donate.options.monthly.title ? 
+              getMessage(messages.donate.options.monthly.title) : 'Monthly Support'}</h3>
+            <p>{messages.donate.options && messages.donate.options.monthly && messages.donate.options.monthly.description ? 
+              getMessage(messages.donate.options.monthly.description) : 'Become a monthly donor to provide sustained support for our mission.'}</p>
+              </div>
+          
+          <div className="donation-option">
+            <div className="option-icon"><FaBuilding /></div>
+            <h3>{messages.donate.options && messages.donate.options.corporate && messages.donate.options.corporate.title ? 
+              getMessage(messages.donate.options.corporate.title) : 'Corporate Sponsorship'}</h3>
+            <p>{messages.donate.options && messages.donate.options.corporate && messages.donate.options.corporate.description ? 
+              getMessage(messages.donate.options.corporate.description) : 'Partner with us as a corporate sponsor to make a bigger impact.'}</p>
+          </div>
+        </div>
+        
+        <div className="donation-impact">
+          <h3>{messages.donate.impact && messages.donate.impact.title ? 
+            getMessage(messages.donate.impact.title) : 'Your Donation Impact'}</h3>
+          
+          <div className="impact-items">
+            <div className="impact-item">
+              <div className="impact-amount">₹500</div>
+              <div className="impact-description">{messages.donate.impact && messages.donate.impact.amount500 ? 
+                getMessage(messages.donate.impact.amount500) : 'Provides 10 meals to those in need'}</div>
+            </div>
+            
+            <div className="impact-item">
+              <div className="impact-amount">₹2,000</div>
+              <div className="impact-description">{messages.donate.impact && messages.donate.impact.amount2000 ? 
+                getMessage(messages.donate.impact.amount2000) : 'Supports a family for a week'}</div>
+            </div>
+            
+            <div className="impact-item">
+              <div className="impact-amount">₹5,000</div>
+              <div className="impact-description">{messages.donate.impact && messages.donate.impact.amount5000 ? 
+                getMessage(messages.donate.impact.amount5000) : 'Funds a food collection drive'}</div>
+            </div>
+            
+            <div className="impact-item">
+              <div className="impact-amount">₹10,000</div>
+              <div className="impact-description">{messages.donate.impact && messages.donate.impact.amount10000 ? 
+                getMessage(messages.donate.impact.amount10000) : 'Helps establish a community food distribution center'}</div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="donation-form">
+          <h3>{messages.donate.form && messages.donate.form.title ? 
+            getMessage(messages.donate.form.title) : 'Make a Donation'}</h3>
+          
+            <form onSubmit={(e) => handleSubmit(e, 'donate')}>
+              <div className="form-group">
+              <label htmlFor="name">{messages.donate.form && messages.donate.form.name ? 
+                getMessage(messages.donate.form.name) : 'Full Name'}</label>
+                <input
+                  type="text"
+                id="name" 
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            
+              <div className="form-group">
+              <label htmlFor="email">{messages.donate.form && messages.donate.form.email ? 
+                getMessage(messages.donate.form.email) : 'Email'}</label>
+                <input
+                  type="email"
+                id="email" 
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            
+              <div className="form-group">
+              <label htmlFor="organization">{messages.donate.form && messages.donate.form.organization ? 
+                getMessage(messages.donate.form.organization) : 'Organization (Optional)'}</label>
+              <input 
+                type="text" 
+                id="organization" 
+                name="organization" 
+                value={formData.organization}
+                onChange={handleChange}
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="amount">{messages.donate.form && messages.donate.form.amount ? 
+                getMessage(messages.donate.form.amount) : 'Donation Amount (₹)'}</label>
+                <input
+                  type="number"
+                id="amount" 
+                name="amount" 
+                value={formData.amount}
+                  onChange={handleChange}
+                  min="100"
+                  required
+                />
+              </div>
+            
+              <div className="form-group">
+              <label>{messages.donate.form && messages.donate.form.donationType ? 
+                getMessage(messages.donate.form.donationType) : 'Donation Type'}</label>
+                <div className="radio-group">
+                  <label>
+                    <input
+                      type="radio"
+                      name="donationType"
+                    value="oneTime" 
+                    checked={formData.donationType === 'oneTime'} 
+                      onChange={handleChange}
+                    />
+                  {messages.donate.form && messages.donate.form.oneTime ? 
+                    getMessage(messages.donate.form.oneTime) : 'One-time'}
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="donationType"
+                      value="monthly"
+                      checked={formData.donationType === 'monthly'}
+                      onChange={handleChange}
+                    />
+                  {messages.donate.form && messages.donate.form.monthly ? 
+                    getMessage(messages.donate.form.monthly) : 'Monthly'}
+                  </label>
+                </div>
+              </div>
+            
+            <button type="submit" className="submit-button">
+              {messages.donate.form && messages.donate.form.submit ? 
+                getMessage(messages.donate.form.submit) : 'Donate Now'}
+              </button>
+            </form>
+          
+          {formSubmitted === 'donate' && (
+            <div className="success-message">
+              {messages.donate.form && messages.donate.form.success ? 
+                getMessage(messages.donate.form.success) : 'Thank you for your generous donation! Your contribution will help us make a difference.'}
+        </div>
+      )}
+        </div>
+      </div>
+    );
+  };
+  
+  // Render Calculator content
+  const renderCalculatorContent = () => {
+    // Check if messages.calculator exists
+    if (!messages || !messages.calculator) {
+      console.error('messages.calculator is undefined');
+      return <div>Loading Calculator content...</div>;
+    }
     
-    return posts.filter(post => 
-      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.content.toLowerCase().includes(searchQuery.toLowerCase())
+    return (
+      <div className="calculator-content">
+        <h2>{messages.calculator.title ? getMessage(messages.calculator.title) : 'Food Waste Impact Calculator'}</h2>
+        <p className="section-intro">{messages.calculator.subtitle ? getMessage(messages.calculator.subtitle) : 'Calculate the impact of food waste and the benefits of donation'}</p>
+          
+          <div className="calculator-tabs">
+            <button 
+            className={calculatorType === 'restaurant' ? 'active' : ''} 
+              onClick={() => handleCalculatorTypeChange('restaurant')}
+            >
+            {messages.calculator.types && messages.calculator.types.restaurant ? 
+              getMessage(messages.calculator.types.restaurant) : 'Restaurant'}
+            </button>
+            <button 
+            className={calculatorType === 'individual' ? 'active' : ''} 
+              onClick={() => handleCalculatorTypeChange('individual')}
+            >
+            {messages.calculator.types && messages.calculator.types.individual ? 
+              getMessage(messages.calculator.types.individual) : 'Individual'}
+            </button>
+            <button 
+            className={calculatorType === 'organization' ? 'active' : ''} 
+              onClick={() => handleCalculatorTypeChange('organization')}
+            >
+            {messages.calculator.types && messages.calculator.types.organization ? 
+              getMessage(messages.calculator.types.organization) : 'Organization'}
+            </button>
+          </div>
+          
+            {renderCalculator()}
+            
+        {calculationResults && renderCalculationResults()}
+          </div>
     );
   };
 
-  const renderForumPosts = () => {
-    const filteredPosts = getFilteredPosts();
-    
-    if (filteredPosts.length === 0) {
-      return (
-        <div className="empty-state">
-          <p>{getMessage(messages.community.emptyState)}</p>
-        </div>
-      );
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'csr':
+        return renderCSRContent();
+      
+      case 'volunteer':
+        return renderVolunteerContent();
+      
+      case 'donate':
+        return renderDonateContent();
+      
+      case 'calculator':
+        return renderCalculatorContent();
+      
+      case 'community':
+        return <CommunityForum />;
+      
+      default:
+        return null;
     }
-    
-    return filteredPosts.map(post => (
-      <div className="forum-post" key={post.id}>
-        <h3 className="post-title">{post.title}</h3>
-        <div className="post-meta">
-          <span className="post-author">
-            {getMessage(messages.community.post.by)} {post.author}
-          </span>
-          <span className="post-date">
-            {getMessage(messages.community.post.on)} {post.date}
-          </span>
-        </div>
-        <div className="post-content">
-          <p>{post.content}</p>
-        </div>
-        <div className="post-actions">
-          <button className="post-action-button">
-            <FaThumbsUp /> {getMessage(messages.community.post.like)} ({post.likes})
-          </button>
-          <button className="post-action-button">
-            <FaReply /> {getMessage(messages.community.post.reply)}
-          </button>
-          {post.comments.length > 0 && (
-            <button className="post-action-button">
-              <FaComments /> 
-              {getMessage(messages.community.post.showComments)} ({post.comments.length})
-            </button>
-          )}
-        </div>
-        
-        {post.comments.length > 0 && (
-          <div className="post-comments">
-            {post.comments.map((comment, index) => (
-              <div className="comment" key={index}>
-                <div className="comment-meta">
-                  <span className="comment-author">{comment.author}</span>
-                  <span className="comment-date">{comment.date}</span>
-                </div>
-                <div className="comment-content">
-                  <p>{comment.content}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    ));
   };
 
   useEffect(() => {
@@ -1200,436 +1403,45 @@ const MorePage = () => {
       <h1 className="more-page-title">{getMessage(messages.title)}</h1>
       
       <div className="tabs">
-        <button 
+            <button 
           className={`tab-button ${activeTab === 'csr' ? 'active' : ''}`}
           onClick={() => setActiveTab('csr')}
-        >
+            >
           <FaBuilding /> {getMessage(messages.tabs.csr)}
-        </button>
-        <button 
+            </button>
+            <button 
           className={`tab-button ${activeTab === 'volunteer' ? 'active' : ''}`}
           onClick={() => setActiveTab('volunteer')}
-        >
+            >
           <FaUsers /> {getMessage(messages.tabs.volunteer)}
-        </button>
-        <button 
+            </button>
+            <button 
           className={`tab-button ${activeTab === 'donate' ? 'active' : ''}`}
           onClick={() => setActiveTab('donate')}
-        >
+            >
           <FaDonate /> {getMessage(messages.tabs.donate)}
-        </button>
-        <button 
+            </button>
+            <button 
           className={`tab-button ${activeTab === 'calculator' ? 'active' : ''}`}
           onClick={() => setActiveTab('calculator')}
-        >
+            >
           <FaCalculator /> {getMessage(messages.tabs.calculator)}
-        </button>
-        <button 
+            </button>
+            <button 
           className={`tab-button ${activeTab === 'community' ? 'active' : ''}`}
           onClick={() => setActiveTab('community')}
-        >
+            >
           <FaComments /> {getMessage(messages.tabs.community)}
-        </button>
-      </div>
-
+            </button>
+          </div>
+          
       {successMessage && (
         <div className="success-message">
           {successMessage}
-        </div>
-      )}
-      
-      {activeTab === 'csr' && (
-        <div className="tab-content csr-content">
-          <h2>{getMessage(messages.csr.title)}</h2>
-          <p className="subtitle">{getMessage(messages.csr.subtitle)}</p>
-          
-          <div className="benefits-grid">
-            <div className="benefit-card">
-              <h3><FaFileAlt /> {getMessage(messages.csr.benefits.taxBenefits.title)}</h3>
-              <p>{getMessage(messages.csr.benefits.taxBenefits.description)}</p>
-            </div>
-            <div className="benefit-card">
-              <h3><FaBuilding /> {getMessage(messages.csr.benefits.brandImage.title)}</h3>
-              <p>{getMessage(messages.csr.benefits.brandImage.description)}</p>
-            </div>
-            <div className="benefit-card">
-              <h3><FaUsers /> {getMessage(messages.csr.benefits.employeeEngagement.title)}</h3>
-              <p>{getMessage(messages.csr.benefits.employeeEngagement.description)}</p>
-            </div>
-            <div className="benefit-card">
-              <h3><FaHandsHelping /> {getMessage(messages.csr.benefits.sdgAlignment.title)}</h3>
-              <p>{getMessage(messages.csr.benefits.sdgAlignment.description)}</p>
-            </div>
-          </div>
-          
-          <div className="contact-form">
-            <h3>{getMessage(messages.csr.contactUs.title)}</h3>
-            <form onSubmit={(e) => handleSubmit(e, 'csr')}>
-              <div className="form-group">
-                <label><FaBuilding /> {getMessage(messages.csr.contactUs.name)}</label>
-                <input
-                  type="text"
-                  name="organization"
-                  value={formData.organization}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label><FaEnvelope /> {getMessage(messages.csr.contactUs.email)}</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label><FaPhone /> {getMessage(messages.csr.contactUs.phone)}</label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>{getMessage(messages.csr.contactUs.message)}</label>
-                <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  rows="4"
-                  required
-                ></textarea>
-              </div>
-              <button type="submit" className="submit-button">
-                {getMessage(messages.csr.contactUs.submit)}
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
-      
-      {activeTab === 'volunteer' && (
-        <div className="tab-content volunteer-content">
-          <h2>{getMessage(messages.volunteer.title)}</h2>
-          <p className="subtitle">{getMessage(messages.volunteer.subtitle)}</p>
-          
-          <div className="volunteer-opportunities">
-            <h3>{getMessage(messages.volunteer.opportunities.title)}</h3>
-            <ul className="opportunities-list">
-              <li><FaHandsHelping /> {getMessage(messages.volunteer.opportunities.foodCollection)}</li>
-              <li><FaUsers /> {getMessage(messages.volunteer.opportunities.eventManagement)}</li>
-              <li><FaBuilding /> {getMessage(messages.volunteer.opportunities.awarenessPrograms)}</li>
-              <li><FaFileAlt /> {getMessage(messages.volunteer.opportunities.techSupport)}</li>
-            </ul>
-          </div>
-          
-          <div className="volunteer-form">
-            <h3>{getMessage(messages.volunteer.form.title)}</h3>
-            <form onSubmit={(e) => handleSubmit(e, 'volunteer')}>
-              <div className="form-group">
-                <label><FaUser /> {getMessage(messages.volunteer.form.name)}</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label><FaEnvelope /> {getMessage(messages.volunteer.form.email)}</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label><FaPhone /> {getMessage(messages.volunteer.form.phone)}</label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>{getMessage(messages.volunteer.form.availability)}</label>
-                <textarea
-                  name="availability"
-                  value={formData.availability}
-                  onChange={handleChange}
-                  rows="2"
-                  required
-                ></textarea>
-              </div>
-              <div className="form-group">
-                <label>{getMessage(messages.volunteer.form.skills)}</label>
-                <textarea
-                  name="skills"
-                  value={formData.skills}
-                  onChange={handleChange}
-                  rows="3"
-                  required
-                ></textarea>
-              </div>
-              <button type="submit" className="submit-button">
-                {getMessage(messages.volunteer.form.submit)}
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
-      
-      {activeTab === 'donate' && (
-        <div className="tab-content donate-content">
-          <h2>{getMessage(messages.donate.title)}</h2>
-          <p className="subtitle">{getMessage(messages.donate.subtitle)}</p>
-          
-          <div className="impact-section">
-            <h3>{getMessage(messages.donate.impact.title)}</h3>
-            <div className="impact-cards">
-              <div className="impact-card">
-                <FaDonate className="impact-icon" />
-                <p>{getMessage(messages.donate.impact.meals)}</p>
-              </div>
-              <div className="impact-card">
-                <FaDonate className="impact-icon" />
-                <p>{getMessage(messages.donate.impact.family)}</p>
-              </div>
-              <div className="impact-card">
-                <FaDonate className="impact-icon" />
-                <p>{getMessage(messages.donate.impact.community)}</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="donation-form">
-            <h3>{getMessage(messages.donate.form.title)}</h3>
-            <form onSubmit={(e) => handleSubmit(e, 'donate')}>
-              <div className="form-group">
-                <label><FaUser /> {getMessage(messages.donate.form.name)}</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label><FaEnvelope /> {getMessage(messages.donate.form.email)}</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label><FaDonate /> {getMessage(messages.donate.form.amount)}</label>
-                <input
-                  type="number"
-                  name="donationAmount"
-                  value={formData.donationAmount}
-                  onChange={handleChange}
-                  min="100"
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>{getMessage(messages.donate.form.type)}</label>
-                <div className="radio-group">
-                  <label>
-                    <input
-                      type="radio"
-                      name="donationType"
-                      value="one-time"
-                      checked={formData.donationType === 'one-time'}
-                      onChange={handleChange}
-                    />
-                    {getMessage(messages.donate.form.oneTime)}
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name="donationType"
-                      value="monthly"
-                      checked={formData.donationType === 'monthly'}
-                      onChange={handleChange}
-                    />
-                    {getMessage(messages.donate.form.monthly)}
-                  </label>
-                </div>
-              </div>
-              <button type="submit" className="submit-button donate-button">
-                {getMessage(messages.donate.form.submit)}
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
-      
-      {activeTab === 'calculator' && (
-        <div className="tab-content calculator-content">
-          <h2>{getMessage(messages.calculator.title)}</h2>
-          <p className="subtitle">{getMessage(messages.calculator.subtitle)}</p>
-          
-          <div className="calculator-tabs">
-            <button 
-              className={`calculator-tab ${calculatorType === 'restaurant' ? 'active' : ''}`}
-              onClick={() => handleCalculatorTypeChange('restaurant')}
-            >
-              <FaUtensils /> {getMessage(messages.calculator.types.restaurant)}
-            </button>
-            <button 
-              className={`calculator-tab ${calculatorType === 'individual' ? 'active' : ''}`}
-              onClick={() => handleCalculatorTypeChange('individual')}
-            >
-              <FaHome /> {getMessage(messages.calculator.types.individual)}
-            </button>
-            <button 
-              className={`calculator-tab ${calculatorType === 'organization' ? 'active' : ''}`}
-              onClick={() => handleCalculatorTypeChange('organization')}
-            >
-              <FaIndustry /> {getMessage(messages.calculator.types.organization)}
-            </button>
-          </div>
-          
-          <div className="calculator-container">
-            {renderCalculator()}
-            
-            <button 
-              className="calculate-button" 
-              onClick={calculateImpact}
-            >
-              <FaCalculator /> {getMessage(messages.calculator.calculate)}
-            </button>
-            
-            {renderCalculationResults()}
-          </div>
-        </div>
-      )}
-      
-      {activeTab === 'community' && (
-        <div className="tab-content community-content">
-          <h2>{getMessage(messages.community.title)}</h2>
-          <p className="subtitle">{getMessage(messages.community.subtitle)}</p>
-          
-          <div className="forum-controls">
-            <div className="search-container">
-              <input
-                type="text"
-                className="search-input"
-                placeholder={getMessage(messages.community.search)}
-                value={searchQuery}
-                onChange={handleSearchChange}
-              />
-              <FaSearch className="search-icon" />
-            </div>
-            
-            <button 
-              className="new-post-button"
-              onClick={() => setShowNewPostForm(true)}
-            >
-              <FaPlus /> {getMessage(messages.community.newPost)}
-            </button>
-          </div>
-          
-          <div className="forum-categories">
-            <button 
-              className={`category-button ${forumCategory === 'success' ? 'active' : ''}`}
-              onClick={() => handleForumCategoryChange('success')}
-            >
-              <FaStar /> {getMessage(messages.community.categories.success)}
-            </button>
-            <button 
-              className={`category-button ${forumCategory === 'initiatives' ? 'active' : ''}`}
-              onClick={() => handleForumCategoryChange('initiatives')}
-            >
-              <FaHandsHelping /> {getMessage(messages.community.categories.initiatives)}
-            </button>
-            <button 
-              className={`category-button ${forumCategory === 'tips' ? 'active' : ''}`}
-              onClick={() => handleForumCategoryChange('tips')}
-            >
-              <FaLightbulb /> {getMessage(messages.community.categories.tips)}
-            </button>
-            <button 
-              className={`category-button ${forumCategory === 'qa' ? 'active' : ''}`}
-              onClick={() => handleForumCategoryChange('qa')}
-            >
-              <FaQuestion /> {getMessage(messages.community.categories.qa)}
-            </button>
-          </div>
-          
-          {showNewPostForm && (
-            <div className="new-post-form-container">
-              <h3>{getMessage(messages.community.form.title)}</h3>
-              <form onSubmit={handleNewPostSubmit} className="new-post-form">
-                <div className="form-group">
-                  <label>{getMessage(messages.community.form.postTitle)}</label>
-                  <input
-                    type="text"
-                    name="title"
-                    value={newPost.title}
-                    onChange={handleNewPostChange}
-                    required
-                  />
-                </div>
-                
-                <div className="form-group">
-                  <label>{getMessage(messages.community.form.content)}</label>
-                  <textarea
-                    name="content"
-                    value={newPost.content}
-                    onChange={handleNewPostChange}
-                    rows="5"
-                    required
-                  ></textarea>
-                </div>
-                
-                <div className="form-group">
-                  <label>{getMessage(messages.community.form.category)}</label>
-                  <select
-                    name="category"
-                    value={newPost.category}
-                    onChange={handleNewPostChange}
-                    required
-                  >
-                    <option value="success">{getMessage(messages.community.categories.success)}</option>
-                    <option value="initiatives">{getMessage(messages.community.categories.initiatives)}</option>
-                    <option value="tips">{getMessage(messages.community.categories.tips)}</option>
-                    <option value="qa">{getMessage(messages.community.categories.qa)}</option>
-                  </select>
-                </div>
-                
-                <div className="form-actions">
-                  <button type="button" className="cancel-button" onClick={() => setShowNewPostForm(false)}>
-                    {getMessage(messages.community.form.cancel)}
-                  </button>
-                  <button type="submit" className="submit-button">
-                    {getMessage(messages.community.form.submit)}
-                  </button>
-                </div>
-              </form>
             </div>
           )}
           
-          <div className="forum-posts-container">
-            {renderForumPosts()}
-          </div>
-        </div>
-      )}
+      {renderTabContent()}
     </div>
   );
 };

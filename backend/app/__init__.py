@@ -10,6 +10,8 @@ from app.routes.donor_routes import donor_bp
 from app.routes.delivery_routes import delivery_bp
 from app.routes.register_donations import donation_bp
 from app.routes.forecast_routes import forecast_bp
+from app.routes.profile_routes import profile_bp
+from app.routes.community_routes import community_bp
 
 # Load environment variables from .env
 load_dotenv()
@@ -17,7 +19,8 @@ load_dotenv()
 # Initialize Flask app
 def create_app():
     app = Flask(__name__)
-    CORS(app)  # Enable Cross-Origin Resource Sharing
+    # Enable Cross-Origin Resource Sharing with specific configuration
+    CORS(app, resources={r"/*": {"origins": "http://localhost:3000", "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"], "allow_headers": ["Content-Type", "Authorization"]}})
 
     # Set Flask Config from .env file
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
@@ -38,6 +41,8 @@ def create_app():
     app.register_blueprint(delivery_bp, url_prefix="/delivery")
     app.register_blueprint(auth_bp, url_prefix="/auth")
     app.register_blueprint(forecast_bp, url_prefix="/forecast")
+    app.register_blueprint(profile_bp, url_prefix="/profile")
+    app.register_blueprint(community_bp, url_prefix="/community")
 
     # Define user loader for Flask-Login
     @login_manager.user_loader

@@ -106,3 +106,42 @@ def update_delivery(delivery_id):
 @delivery_bp.route("/delete/<string:delivery_id>", methods=["DELETE"])
 def delete_delivery(delivery_id):
     result = db.delivery_partners.delete
+
+# Search delivery partners by name
+@delivery_bp.route("/search", methods=["GET"])
+def search_delivery_partners():
+    try:
+        name_query = request.args.get("name", "")
+        if not name_query or len(name_query) < 2:
+            return jsonify({"error": "Search query too short"}), 400
+            
+        # Search by person_name or company_name
+        query = {
+            "$or": [
+                {"person_name": {"$regex": name_query, "$options": "i"}},
+                {"company_name": {"$regex": name_query, "$options": "i"}}
+            ]
+        }
+        
+        # Find matching delivery partners
+        delivery_partners = list(db.delivery_partners.find(query, {
+            "person_name": 1, 
+            "company_name": 1,
+            "user_id": 1
+        }).limit(10))
+        
+        # Format results
+        results = []
+        for partner in delivery_partners:
+            results.append({
+                "_id": str(partner["_id"]),
+                "person_name": partner.get("person_name", ""),
+                "company_name": partner.get("company_name", ""),
+                "user_id": partner.get("user_id", "")
+            })
+            
+        return jsonify({"results": results}), 200
+        
+    except Exception as e:
+        print(f"Error searching delivery partners: {e}")
+        return jsonify({"error": str(e)}), 500

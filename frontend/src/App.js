@@ -17,6 +17,7 @@ import Profile from "./components/Profile";
 import ChatbotWidget from "./components/ChatbotWidget";
 import MorePage from "./components/MorePage";
 import ForecastPage from "./components/ForecastPage";
+import TestPage from "./components/TestPage";
 import "./App.css";
 
 function App() {
@@ -72,6 +73,7 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/more" element={<MorePage />} />
               <Route path="/forecast" element={<ForecastPage />} />
+              <Route path="/test" element={<TestPage />} />
             </Routes>
           </div>
           <Footer />

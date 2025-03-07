@@ -71,13 +71,26 @@ def login():
                 "exp": datetime.utcnow() + timedelta(hours=24)  # Expiration time (1 hour)
             }
             token = jwt.encode(payload, current_app.config["SECRET_KEY"], algorithm="HS256")
+            user_name = None  # Default to None in case no record is found
+
+            if existing_user["role"] == "donor":
+                user_data = db.donors.find_one({"user_id": str(existing_user["_id"])})
+            elif existing_user["role"] == "receiver":
+                user_data = db.receivers.find_one({"user_id": str(existing_user["_id"])})
+            elif existing_user["role"] == "delivery_partner":
+                user_data = db.delivery_partners.find_one({"user_id": str(existing_user["_id"])})
+
+            print(user_data)
+            if user_data:  # Ensure record exists
+                user_name = user_data.get("full_name", "Unknown")
             # Return the token to the client
             return jsonify({
                 "message": "Login successful",
                 "token": token,  # Send the token in the response
                 "user": {
                     "user_id": str(existing_user["_id"]),  # Convert ObjectId to string
-                    "role": existing_user["role"]
+                    "role": existing_user["role"],
+                    "name": user_name
                 }
             }), 200
 
