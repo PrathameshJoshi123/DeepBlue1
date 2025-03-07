@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import "../CSS/Navbar.css";
 import axios from 'axios';
-import { FaUser, FaHome, FaInfoCircle, FaSignInAlt, FaUserPlus, FaLanguage, FaEllipsisH } from "react-icons/fa";
+import { FaUser, FaHome, FaInfoCircle, FaSignInAlt, FaUserPlus, FaLanguage, FaEllipsisH, FaChartLine } from "react-icons/fa";
 import { useLanguage } from '../context/LanguageContext';
 import LanguageSelector from './LanguageSelector';
 
@@ -52,6 +52,10 @@ const Navbar = () => {
     more: {
       'en': 'More',
       'hi': 'अधिक'
+    },
+    forecast: {
+      'en': 'Forecast & Optimize',
+      'hi': 'पूर्वानुमान और अनुकूलन'
     },
     tabs: {
       csr: {
@@ -158,6 +162,9 @@ const Navbar = () => {
               {userRole === 'delivery_partner' && (
                 <Link to="/delivery-dashboard">{getMessage(messages.dashboard)}</Link>
               )}
+              <Link to="/forecast" className="forecast-link">
+                <FaChartLine /> {getMessage(messages.forecast)}
+              </Link>
               <Link to="/profile" className="profile-link">
                 <FaUser /> {getMessage(messages.profile)}
               </Link>

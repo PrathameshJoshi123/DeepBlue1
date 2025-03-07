@@ -9,6 +9,7 @@ from app.routes.receiver_routes import receiver_bp
 from app.routes.donor_routes import donor_bp
 from app.routes.delivery_routes import delivery_bp
 from app.routes.register_donations import donation_bp
+from app.routes.forecast_routes import forecast_bp
 
 # Load environment variables from .env
 load_dotenv()
@@ -36,6 +37,7 @@ def create_app():
     app.register_blueprint(donation_bp, url_prefix="/donation")
     app.register_blueprint(delivery_bp, url_prefix="/delivery")
     app.register_blueprint(auth_bp, url_prefix="/auth")
+    app.register_blueprint(forecast_bp, url_prefix="/forecast")
 
     # Define user loader for Flask-Login
     @login_manager.user_loader

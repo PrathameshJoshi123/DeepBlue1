@@ -16,6 +16,7 @@ import DeliveryDashboard from "./components/DeliveryDashboard";
 import Profile from "./components/Profile";
 import ChatbotWidget from "./components/ChatbotWidget";
 import MorePage from "./components/MorePage";
+import ForecastPage from "./components/ForecastPage";
 import "./App.css";
 
 function App() {
@@ -70,6 +71,7 @@ function App() {
               <Route path="/delivery-dashboard" element={<DeliveryDashboard />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/more" element={<MorePage />} />
+              <Route path="/forecast" element={<ForecastPage />} />
             </Routes>
           </div>
           <Footer />
